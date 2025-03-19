@@ -1,4 +1,14 @@
+function updateVisitorCount() {
+    fetch("/visitor-count")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("live-visitor-count").textContent = data.active_visitors;
+        })
+        .catch(error => console.error("Fout bij ophalen bezoekersaantal:", error));
+}
 
+// 🚀 Update de teller elke 5 seconden
+setInterval(updateVisitorCount, 5000);
 
 function toggleDarkMode() {
     let body = document.body;
