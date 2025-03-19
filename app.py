@@ -21,6 +21,22 @@ mail = Mail(app)
 def index():
     return render_template('index.html')
 
+@app.route('/robots.txt')
+def robots():
+    return Response("User-agent: *\nAllow: /\nSitemap: https://www.pyflow.nl/sitemap.xml", mimetype="text/plain")
+
+@app.route('/sitemap.xml')
+def sitemap():
+    sitemap_xml = """<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+        <url><loc>https://www.pyflow.nl/</loc><priority>1.0</priority></url>
+        <url><loc>https://www.pyflow.nl/contact</loc><priority>0.8</priority></url>
+        <url><loc>https://www.pyflow.nl/overons</loc><priority>0.7</priority></url>
+        <url><loc>https://www.pyflow.nl/besparings-calculator</loc><priority>0.8</priority></url>
+    </urlset>
+    """
+    return Response(sitemap_xml, mimetype="application/xml")
+
 @app.route('/automatiseren')
 def automatiseren():
     return render_template('automatiseren.html')
