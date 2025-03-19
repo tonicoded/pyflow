@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="description" content="PyFlow biedt op maat gemaakte automatiseringsoplossingen voor bedrijven. Bespaar tijd en geld met slimme software.">
+    <meta name="keywords" content="automatisering, software ontwikkeling, procesoptimalisatie, besparingscalculator, PyFlow, Python-oplossingen">
+    <meta property="og:title" content="PyFlow - Automatisering voor Bedrijven">
+    <meta property="og:description" content="Bespaar tijd en geld met slimme softwareoplossingen van PyFlow.">
+    <meta property="og:image" content="https://www.pyflow.nl/static/logo.png">
+    <meta property="og:url" content="https://www.pyflow.nl/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PyFlow - Automatisering voor Bedrijven">
+    <meta name="twitter:description" content="Bespaar tijd en geld met slimme softwareoplossingen van PyFlow.">
+    <meta name="twitter:image" content="https://www.pyflow.nl/static/logo.png">
+    <title>PyFlow - Over ons</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles3.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    
+    <!-- Dark Mode Toggle Switch -->
+    <div id="dark-mode-toggle" onclick="toggleDarkMode()">
+        <div class="toggle-track">
+            <div class="toggle-thumb"></div>
+        </div>
+    </div>
+
+    <canvas id="backgroundCanvas"></canvas>
+
+    <div id="menu">
+        <div id="menu-icon" onclick="toggleMenu()">☰</div>
+        <nav id="menu-content">
+            <div id="menu-close" onclick="toggleMenu()">
+                <span>&times;</span>
+            </div>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/automatiseren">Waarom Automatiseren?</a></li>
+                <li><a href="/besparings-calculator">Besparings Calculator</a></li>
+                <li><a href="/overons">Over ons</a></li>
+                <li><a href="/contact">Contact opnemen</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Hero Sectie -->
+    <div id="hero">
+        <div id="logo-container">
+            <img id="logo" src="/static/logo.png" alt="PyFlow Logo">
+            <div id="logo-overlay"></div> <!-- Extra effect -->
+        </div>
+        <h1 id="glitch-text" style="display: none;">PyFlow</h1> <!-- Verbergen voor compatibiliteit -->
+        <p id="subtitle"></p> <!-- Behoudt ondertitel en animatie -->
+    
+</div>
+
+<!-- 🌟 Over Mij Sectie -->
+<section id="about-me">
+    <div class="profile-container">
+        <img src="/static/profile.jpg" alt="Anthony" class="profile-picture">
+        <h1>Hey, ik ben Anthony</h1>
+        <p>Softwareontwikkelaar & Automatiseringsexpert</p>
+    </div>
+    <div id="socials">
+        <a href="https://twitter.com/yourprofile" target="_blank" class="social-icon">
+            <i class="fab fa-x-twitter"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/yourprofile" target="_blank" class="social-icon">
+            <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://www.facebook.com/yourprofile" target="_blank" class="social-icon">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://www.instagram.com/yourprofile" target="_blank" class="social-icon">
+            <i class="fab fa-instagram"></i>
+        </a>
+    </div>
+
+    <h2 class="animated-title">Mijn Passie voor Automatisering</h2>
+    <p>
+        Sinds jongs af aan ben ik gefascineerd door technologie en programmeren. Wat begon als het bouwen van simpele websites en kleine scripts, groeide uit tot een full-time passie voor automatisering en softwareontwikkeling.
+    </p>
+    <p>
+        Door de jaren heen heb ik mezelf verdiept in Python, een programmeertaal die eindeloze mogelijkheden biedt. Van data-analyse en webontwikkeling tot complexe automatiseringsoplossingen. Mijn doel is om bedrijven te helpen tijd te besparen, processen te optimaliseren en efficiënter te werken door middel van slimme software.
+    </p>
+
+    <h2 class="animated-title">Wat Ik Doe</h2>
+    <p>
+        De afgelopen jaren heb ik maatwerkoplossingen ontwikkeld voor diverse bedrijven. Ik richt me op:
+    </p>
+
+    <ul class="skills-list">
+        <li><i class="fas fa-cogs"></i> Automatisering van repetitieve taken</li>
+        <li><i class="fas fa-code"></i> Maatwerk Python-scripts en tools</li>
+        <li><i class="fas fa-laptop-code"></i> Geavanceerde webapplicaties en dashboards</li>
+        <li><i class="fas fa-plug"></i> API-integraties en data-verwerking</li>
+        <li><i class="fas fa-cloud"></i> Cloud-oplossingen en serverbeheer</li>
+    </ul>
+    
+
+    <p>
+        Elk bedrijf heeft unieke processen en uitdagingen. Daarom kijk ik graag mee op locatie om samen te ontdekken waar automatisering de meeste waarde kan toevoegen. Of het nu gaat om tijdsbesparing, kostenreductie of het optimaliseren van bestaande workflows, ik help graag met het vinden van de juiste oplossing.
+    </p>
+
+    <p>
+        Bent u benieuwd naar de mogelijkheden? Ik zou het ontzettend leuk vinden om een dag mee te kijken binnen uw bedrijf en samen te bespreken hoe we processen slimmer en efficiënter kunnen maken, volledig afgestemd op uw wensen.
+    </p>
+
+    <!-- Call-to-Action knop -->
+    <div class="cta-container">
+        <a href="/contact" class="cta-button">Neem contact op</a>
+    </div>
+</section>
+
+
+<footer id="footer">
+    &copy; PyFlow 2025
+</footer>
+
+
+
+
+    <script src="{{ url_for('static', filename='js/script3.js') }}"></script>
+
+</body>
+
+
+</html>

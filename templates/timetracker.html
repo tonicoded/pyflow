@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="description" content="PyFlow biedt op maat gemaakte automatiseringsoplossingen voor bedrijven. Bespaar tijd en geld met slimme software.">
+    <meta name="keywords" content="automatisering, software ontwikkeling, procesoptimalisatie, besparingscalculator, PyFlow, Python-oplossingen">
+    <meta property="og:title" content="PyFlow - Automatisering voor Bedrijven">
+    <meta property="og:description" content="Bespaar tijd en geld met slimme softwareoplossingen van PyFlow.">
+    <meta property="og:image" content="https://www.pyflow.nl/static/logo.png">
+    <meta property="og:url" content="https://www.pyflow.nl/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PyFlow - Automatisering voor Bedrijven">
+    <meta name="twitter:description" content="Bespaar tijd en geld met slimme softwareoplossingen van PyFlow.">
+    <meta name="twitter:image" content="https://www.pyflow.nl/static/logo.png">
+    <title>PyFlow - Besparings Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles4.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    
+    <!-- Dark Mode Toggle Switch -->
+    <div id="dark-mode-toggle" onclick="toggleDarkMode()">
+        <div class="toggle-track">
+            <div class="toggle-thumb"></div>
+        </div>
+    </div>
+
+    <canvas id="backgroundCanvas"></canvas>
+
+    <div id="menu">
+        <div id="menu-icon" onclick="toggleMenu()">☰</div>
+        <nav id="menu-content">
+            <div id="menu-close" onclick="toggleMenu()">
+                <span>&times;</span>
+            </div>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/automatiseren">Waarom Automatiseren?</a></li>
+                <li><a href="/besparings-calculator">Besparings Calculator</a></li>
+                <li><a href="/overons">Over ons</a></li>
+                <li><a href="/contact">Contact opnemen</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Hero Sectie -->
+    <div id="hero">
+        <div id="logo-container">
+            <img id="logo" src="/static/logo.png" alt="PyFlow Logo">
+            <div id="logo-overlay"></div> <!-- Extra effect -->
+        </div>
+        <h1 id="glitch-text" style="display: none;">PyFlow</h1> <!-- Verbergen voor compatibiliteit -->
+        <p id="subtitle"></p> <!-- Behoudt ondertitel en animatie -->
+        <div id="socials">
+            <a href="https://twitter.com/yourprofile" target="_blank" class="social-icon">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/yourprofile" target="_blank" class="social-icon">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://www.facebook.com/yourprofile" target="_blank" class="social-icon">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/yourprofile" target="_blank" class="social-icon">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+    
+</div>
+
+<div id="calculator-container">
+    <h2>Kostenbesparing door Automatisering</h2>
+    <p>Bereken hoeveel tijd en kosten je kunt besparen door repetitieve taken te automatiseren.</p>
+
+    <form id="calculator-form">
+        <label for="task-time">Tijd per taak (in minuten):</label>
+        <input type="range" id="task-time" min="1" max="120" value="10">
+        <span id="task-time-display">10 min</span>
+
+        <label for="tasks-per-month">Aantal taken per maand:</label>
+        <input type="range" id="tasks-per-month" min="1" max="1000" value="100">
+        <span id="tasks-per-month-display">100</span>
+
+        <label for="hourly-rate">Uurtarief (€):</label>
+        <input type="range" id="hourly-rate" min="10" max="200" value="50">
+        <span id="hourly-rate-display">€50</span>
+
+        <button type="submit">Bereken Besparing</button>
+    </form>
+
+    <div id="results">
+        <h3>Resultaten</h3>
+        <p><strong>Huidige tijd per maand:</strong> <span id="current-time"></span> uur</p>
+        <p><strong>Tijd na automatisering:</strong> <span id="automated-time"></span> uur</p>
+        <p><strong>Besparing:</strong> <span id="time-saved"></span> uur</p>
+        <p><strong>Kostenbesparing:</strong> €<span id="cost-saved"></span></p>
+    
+    
+
+    </div>
+    
+
+</div>
+
+
+
+<footer id="footer">
+    &copy; PyFlow 2025
+</footer>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/cost_calculator.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/script4.js') }}"></script>
+
+</body>
+
+
+</html>
