@@ -1,5 +1,4 @@
-from flask import Flask, render_template, Response, jsonify, request, session
-from flask_session import Session
+from flask import Flask, render_template, Response, jsonify, request
 from flask_mail import Mail, Message
 import os
 import random
@@ -18,31 +17,9 @@ app.config['MAIL_DEFAULT_SENDER'] = 'anthonyvvza@gmail.com'  # 🔹 Zelfde als M
 
 mail = Mail(app)
 
-# 🔹 Instellingen voor sessies
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
-
-# 🔹 Bezoekers bijhouden
-active_visitors = set()
-
-@app.route("/")
+@app.route('/')
 def index():
-    session_id = session.get("visitor_id")
-
-    if not session_id:
-        session["visitor_id"] = os.urandom(16).hex()
-        session["visitor_id"] = session_id  # Zorg ervoor dat de sessie-ID wordt opgeslagen
-        active_visitors.add(session["visitor_id"])
-
-    return render_template("index.html")
-
-
-
-@app.route("/visitor-count")
-def visitor_count():
-    """Geeft het aantal actieve bezoekers terug."""
-    return jsonify({"active_visitors": len(active_visitors)})
+    return render_template('index.html')
 
 @app.route('/automatiseren')
 def automatiseren():
