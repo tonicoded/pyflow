@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, jsonify, request
+from flask import Flask, render_template, Response, jsonify, request, session
 from flask_session import Session
 from flask_mail import Mail, Message
 import os
@@ -32,9 +32,12 @@ def index():
 
     if not session_id:
         session["visitor_id"] = os.urandom(16).hex()
+        session["visitor_id"] = session_id  # Zorg ervoor dat de sessie-ID wordt opgeslagen
         active_visitors.add(session["visitor_id"])
 
     return render_template("index.html")
+
+
 
 @app.route("/visitor-count")
 def visitor_count():
