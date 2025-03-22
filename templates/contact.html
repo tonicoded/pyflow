@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="description" content="PyFlow biedt op maat gemaakte automatiseringsoplossingen voor bedrijven. Bespaar tijd en geld met slimme software.">
+    <meta name="keywords" content="automatisering, software ontwikkeling, procesoptimalisatie, besparingscalculator, PyFlow, Python-oplossingen">
+    <meta property="og:title" content="PyFlow - Automatisering voor Bedrijven">
+    <meta property="og:description" content="Bespaar tijd en geld met slimme softwareoplossingen van PyFlow.">
+    <meta property="og:image" content="https://www.pyflow.nl/static/logo.png">
+    <meta property="og:url" content="https://www.pyflow.nl/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PyFlow - Automatisering voor Bedrijven">
+    <meta name="twitter:description" content="Bespaar tijd en geld met slimme softwareoplossingen van PyFlow.">
+    <meta name="twitter:image" content="https://www.pyflow.nl/static/logo.png">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <title>PyFlow - Contact opnemen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles5.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    
+    <!-- Dark Mode Toggle Switch -->
+    <div id="dark-mode-toggle" onclick="toggleDarkMode()">
+        <div class="toggle-track">
+            <div class="toggle-thumb"></div>
+        </div>
+    </div>
+
+    <canvas id="backgroundCanvas"></canvas>
+
+    <div id="menu">
+        <div id="menu-icon" onclick="toggleMenu()">☰</div>
+        <nav id="menu-content">
+            <div id="menu-close" onclick="toggleMenu()">
+                <span>&times;</span>
+            </div>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/automatiseren">Waarom Automatiseren?</a></li>
+                <li><a href="/besparings-calculator">Besparings Calculator</a></li>
+                <li><a href="/overons">Over ons</a></li>
+                <li><a href="/contact">Contact opnemen</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Hero Sectie -->
+    <div id="hero">
+        <div id="logo-container">
+            <img id="logo" src="/static/logo.png" alt="PyFlow Logo">
+            <div id="logo-overlay"></div> <!-- Extra effect -->
+        </div>
+        <h1 id="glitch-text" style="display: none;">PyFlow</h1> <!-- Verbergen voor compatibiliteit -->
+        <p id="subtitle"></p> <!-- Behoudt ondertitel en animatie -->
+        <div id="socials">
+            <a href="https://twitter.com/yourprofile" target="_blank" class="social-icon">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/yourprofile" target="_blank" class="social-icon">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://www.facebook.com/yourprofile" target="_blank" class="social-icon">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com/yourprofile" target="_blank" class="social-icon">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+    
+</div>
+
+<div id="contact-container">
+    <h1>Contacteer Ons</h1>
+    <p>Neem contact met ons op voor vragen, offertes of samenwerkingen.</p>
+
+    <div class="contact-form">
+        <form id="contactForm">
+            <label for="name">Naam</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Bericht</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Verstuur</button>
+        </form>
+        <p id="form-status"></p>
+    </div>
+
+</div>
+
+<footer id="footer">
+    &copy; PyFlow 2025
+</footer>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/cost_calculator.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/script5.js') }}"></script>
+
+</body>
+
+
+</html>

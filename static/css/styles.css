@@ -1,0 +1,648 @@
+/* 🔥 Dark Mode (Default) */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #0f0f0f; /* Standaard zwart */
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+    touch-action: manipulation; /* voorkomt dubbel-tap zoom */
+}
+
+/* Canvas blijft achter content zichtbaar */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    opacity: 0.8; /* Iets minder fel */
+}
+input, textarea, select {
+    font-size: 16px; /* Voorkomt automatisch inzoomen op iOS */
+}
+
+/* 🎨 Logo Container - Zorgt voor vaste grootte */
+#logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 600px; /* Vaste breedte */
+    height: 120px; /* Vaste hoogte */
+    margin: 0 auto;
+    overflow: hidden; /* Voorkomt ongewenste uitrekking */
+}
+
+/* 🖼️ Logo zelf */
+#logo {
+    width: 100%;
+    height: auto;
+    max-width: 300px;
+    object-fit: contain; /* Zorgt dat het logo nooit uitrekt */
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+    
+}
+
+/* 🎭 Next-Level Logo Overlay */
+#logo-overlay {
+    position: absolute;
+    width: 130%;
+    height: 130%;
+    top: -15%;
+    left: -15%;
+    background: radial-gradient(circle, rgba(0, 123, 255, 0.15) 15%, transparent 60%);
+    filter: blur(12px);
+    opacity: 0.8;
+    transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    animation: softGlow 5s infinite alternate ease-in-out;
+    pointer-events: none;
+}
+
+/* ✨ Subtiele Pulse-animatie */
+@keyframes softGlow {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1.1);
+        opacity: 0.9;
+    }
+}
+
+
+
+/* 🚀 Hover Effect: Subtiele dynamiek */
+#logo-container:hover #logo-overlay {
+    transform: scale(1.3);
+    opacity: 1;
+    filter: blur(18px);
+}
+
+/* 🖼️ Logo zelf met Depth Effect */
+#logo {
+    width: 100%;
+    height: auto;
+    max-width: 300px;
+    object-fit: contain;
+    transition: transform 0.4s ease-out, filter 0.4s ease-in-out;
+}
+
+/* 🚀 Hover op logo = subtiele 3D beweging */
+#logo-container:hover #logo {
+    transform: scale(1.08) rotateX(10deg);
+    filter: drop-shadow(0px 5px 15px rgba(0, 123, 255, 0.4));
+}
+
+/* 🌐 Voor mobiele apparaten */
+@media (max-width: 768px) {
+    #logo-container {
+        width: 250px;
+        height: 100px;
+    }
+
+    #logo {
+        max-width: 250px;
+    }
+
+    #logo-overlay {
+        width: 140%;
+        height: 140%;
+        filter: blur(8px);
+    }
+}
+
+
+/* Zorg dat hero en de inhoud exact in het midden staan */
+/* Voorkomt dat de hero-sectie van hoogte verandert */
+#hero {
+    min-height: 100vh; /* Houd de sectie altijd even groot */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden; /* Voorkom vreemde scrolls */
+}
+
+/* Klantvriendelijke, moderne tech-stijl voor PyTimize */
+#glitch-text {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #00cc99;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "Poppins", sans-serif;
+    letter-spacing: 2px;
+    
+    /* Zachte neon gloed */
+    text-shadow: 0 0 10px rgba(0, 255, 153, 0.7), 
+                 0 0 20px rgba(0, 255, 153, 0.5), 
+                 0 0 40px rgba(0, 255, 153, 0.3);
+    
+    /* Fade-in animatie */
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInTitle 1.5s ease-out forwards;
+}
+
+/* Fade-in effect bij pagina load */
+@keyframes fadeInTitle {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover-effect: Extra zachtere oplichting */
+#glitch-text:hover {
+    color: #00ffaa;
+    text-shadow: 0 0 15px rgba(0, 255, 153, 1),
+                 0 0 30px rgba(0, 255, 153, 0.8);
+    transition: all 0.3s ease-in-out;
+}
+
+
+/* Subtekst */
+#subtitle {
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: #fff;
+    min-height: 2rem; /* Zorgt ervoor dat de hoogte gelijk blijft */
+    display: flex;
+    align-items: center; /* Houd tekst verticaal gecentreerd */
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 1px;
+    text-shadow: 0px 0px 10px rgba(73, 122, 255, 0.8);
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 1.5s ease-in-out forwards;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    #glitch-text {
+        font-size: 3rem;
+    }
+
+    #subtitle {
+        font-size: 1.3rem;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* Fade-in animatie */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* 🔥 Next-Level Menu Design */
+#menu {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+/* 🚀 Stijlvol Hamburger Menu Icon */
+#menu-icon {
+    font-size: 2rem;
+    cursor: pointer;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 12px 18px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover-effect met subtiele schaduw */
+#menu-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 🌟 **Volledig nieuw full-screen menu** */
+#menu-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85); /* Donkere overlay */
+    backdrop-filter: blur(12px); /* ✅ Subtiele blur */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    transform: scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* 🏗️ Menu openen */
+#menu-content.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: all;
+}
+
+/* ❌ Close-knop bovenaan */
+#menu-close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 2.5rem;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#menu-close:hover {
+    transform: scale(1.2);
+}
+
+/* 📜 Menu-links */
+#menu-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+#menu-content li {
+    margin: 20px 0;
+}
+
+#menu-content a {
+    color: white;
+    font-size: 2rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+    padding: 12px 20px;
+    border-radius: 8px;
+}
+
+#menu-content a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+/* 🌟 **Light Mode Variatie** */
+.light-mode #menu-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+}
+
+.light-mode #menu-close {
+    color: #222;
+}
+
+.light-mode #menu-content a {
+    color: #222;
+}
+
+/* ✅ Light mode menu-icon verbeterd */
+.light-mode #menu-icon {
+    color: #222;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.light-mode #menu-icon:hover {
+    background: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ✅ Light mode menu-background */
+.light-mode #menu-content {
+    background: rgba(255, 255, 255, 0.9);
+    color: #222;
+}
+
+/* ✅ Light mode menu-text */
+.light-mode #menu-content a {
+    color: #333;
+}
+
+.light-mode #menu-content a:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(1.1);
+}
+
+
+/* Call to action button */
+#cta-container {
+    margin-top: 20px;
+}
+
+/* 🚀 Futuristische CTA-knop */
+.cta-button, button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Diepte-effect met blauwe tint */
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 15px 25px;
+    border-radius: 12px; /* Iets ronder voor modern gevoel */
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    border: none;
+    min-width: 200px;
+    min-height: 50px;
+    text-align: center;
+    user-select: none;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); /* 🚀 Subtiele glow */
+    overflow: hidden;
+}
+
+/* 🌀 Hover-effect: Gloed & beweging */
+.cta-button:hover, button:hover {
+    background: linear-gradient(135deg, #0056b3, #004494);
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+}
+
+/* 💡 Klik-effect: Kortstondige schaduwverplaatsing */
+.cta-button:active, button:active {
+    transform: scale(0.97) translateY(2px);
+    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* 🚀 Animatie: Gloeiende rand bij hover */
+.cta-button::before, button::before {
+    content: "";
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    top: -100%;
+    left: -100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, transparent 50%);
+    transition: transform 0.4s ease-in-out;
+    transform: scale(0);
+    opacity: 0.8;
+}
+
+/* 🔥 Hover maakt de gloed zichtbaar */
+.cta-button:hover::before, button:hover::before {
+    transform: scale(1);
+}
+
+/* 🌙 Light Mode Variatie */
+.light-mode .cta-button {
+    background: linear-gradient(135deg, #ff8c00, #ff6500);
+    box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+}
+
+.light-mode .cta-button:hover {
+    background: linear-gradient(135deg, #ff6500, #cc5200);
+    box-shadow: 0 8px 25px rgba(255, 140, 0, 0.5);
+}
+
+/* 🎨 Nieuw hover-effect met zachtere kleuren */
+.hover-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(45, 156, 219, 0.3); /* Frisse blauwe tint */
+    width: 25px;
+    height: 25px;
+    opacity: 0.7;
+    transition: transform 0.4s ease-out, opacity 0.6s ease-out;
+    pointer-events: none; /* ✅ Zorgt ervoor dat hover/tap effecten klikken NIET blokkeren */
+    z-index: -1; /* ✅ Zet de effecten achter de content */
+}
+/* Light Mode hover-effect */
+.light-mode .hover-effect {
+    background: rgba(0, 123, 255, 0.3); /* Iets helderder blauw voor light mode */
+}
+/* 🔘 Dark Mode Toggle Button */
+#dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 15;
+    width: 55px;
+    height: 30px;
+    cursor: pointer;
+}
+
+/* 🔲 Achtergrond van de switch */
+.toggle-track {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+/* 🔘 Het schuivende element (Maan/Zon) */
+.toggle-thumb {
+    width: 26px;
+    height: 26px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* 🌞 Light Mode Styling */
+.light-mode .toggle-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.light-mode .toggle-thumb {
+    left: calc(100% - 30px);
+    background: yellow;
+}
+
+/* Animatie bij wisselen */
+.toggle-thumb::before {
+    content: "🌙";
+    transition: opacity 0.3s ease;
+}
+
+.light-mode .toggle-thumb::before {
+    content: "☀️";
+}
+
+/* ☀️ Light Mode (Klantvriendelijke achtergrond) */
+body.light-mode {
+    background: linear-gradient(to bottom, #e3f2fd, #ffffff); /* Lichtblauw naar wit */
+    color: #212529; /* Donkere tekst voor betere leesbaarheid */
+}
+
+
+
+.light-mode #glitch-text {
+    color: #009977;
+}
+
+.light-mode #subtitle {
+    color: #333;
+}
+
+/* Call-to-action knop in light mode */
+.light-mode .cta-button {
+    background: #2d9cdb;
+    color: white;
+}
+
+.light-mode .cta-button:hover {
+    background: #2185d0;
+}
+
+#backgroundCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    transform: translateY(0);
+    transition: transform 0.3s ease-out;
+}
+
+
+body.scrolled #backgroundCanvas {
+    transform: translateY(-10%);
+}
+/* 🚀 Zorg dat de hoofdcontent de beschikbare ruimte opvult */
+#content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Houdt logo en tekst in het midden */
+    align-items: center;
+    text-align: center;
+}
+
+/* 📌 Footer altijd onderaan */
+#footer {
+    text-align: center;
+    padding: 15px 0;
+    font-size: 1rem;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    width: 100%;
+}
+
+/* 🌞 Light Mode Styling */
+.light-mode #footer {
+    background: rgba(255, 255, 255, 0.9);
+    color: #222;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+}
+/* 🌟 Social Media Icons */
+#socials {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icon i {
+    font-size: 1.5rem;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+/* 🔵 Hover Effect */
+.social-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(77, 184, 255, 0.5);
+}
+
+.social-icon:hover i {
+    color: #4db8ff;
+}
+
+/* 🌞 Light Mode */
+.light-mode .social-icon {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.light-mode .social-icon i {
+    color: #222;
+}
+
+.light-mode .social-icon:hover {
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+}
+
+.light-mode .social-icon:hover i {
+    color: #007bff;
+}
+
+/* 📱 Mobiele Aanpassingen */
+@media (max-width: 768px) {
+    .social-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .social-icon i {
+        font-size: 1.2rem;
+    }
+}
