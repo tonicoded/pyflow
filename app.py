@@ -98,10 +98,28 @@ def send_message():
     message = request.form.get('message')
 
     if not name or not email or not message:
+        return jsonify({"message": "⚠️ Vul alle velden in!"})
+
+    # ✅ E-mail versturen
+    try:
+        msg = Message(subject=f"Nieuw Contactbericht van {name}",
+                      recipients=["anthonyvvza@gmail.com"],
+                      body=f"Naam: {name}\nE-mail: {email}\n\nBericht:\n{message}")
+        
+        mail.send(msg)
+
+        # ✅ Alleen als succesvol verzonden:
         stats = load_stats()
         stats["messages_sent"] += 1
         save_stats(stats)
-        return jsonify({"message": "⚠️ Vul alle velden in!"})
+
+        return jsonify({"message": "✅ Bericht verzonden! We nemen spoedig contact op."})
+
+    except Exception as e:
+        print(f"Fout bij verzenden e-mail: {e}")
+        return jsonify({"message": "⚠️ Er is iets misgegaan. Probeer later opnieuw."})
+
+
 
     # ✅ E-mail versturen
     try:
@@ -189,4 +207,4 @@ def get_stats():
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)
