@@ -1,0 +1,32 @@
+<!-- templates/stats.html -->
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Website Statistieken</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f4f4f4; }
+    .stat { font-size: 1.5rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>📊 PyFlow Statistieken</h1>
+  <div id="stats">
+    <div class="stat">🔢 Totale clicks: <span id="clicks">...</span></div>
+    <div class="stat">👥 Live bezoekers: <span id="live">...</span></div>
+    <div class="stat">📨 Verzonden berichten: <span id="msgs">...</span></div>
+    <div class="stat">🧮 Calculator gebruikt: <span id="calc">...</span></div>
+  </div>
+  <script>
+    fetch('/get-stats')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("clicks").textContent = data.clicks;
+        document.getElementById("live").textContent = data.live_visitors;
+        document.getElementById("msgs").textContent = data.messages_sent;
+        document.getElementById("calc").textContent = data.calculator_uses;
+      });
+  </script>
+</body>
+</html>
