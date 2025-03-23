@@ -39,10 +39,16 @@ def sitemap():
     return Response(sitemap_xml, mimetype="application/xml")
 
 def load_stats():
-    if not os.path.exists("stats.json"):
+    try:
+        if not os.path.exists("stats.json"):
+            print("📄 stats.json niet gevonden, nieuw bestand aangemaakt.")
+            return {"clicks": 0, "live_visitors": 0, "messages_sent": 0, "calculator_uses": 0}
+        with open("stats.json", "r") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"❌ Fout bij het laden van stats.json: {e}")
         return {"clicks": 0, "live_visitors": 0, "messages_sent": 0, "calculator_uses": 0}
-    with open("stats.json", "r") as f:
-        return json.load(f)
+
 
 def save_stats(data):
     with open("stats.json", "w") as f:
@@ -58,10 +64,15 @@ def track_clicks():
 
 @app.after_request
 def track_exit(response):
-    stats = load_stats()
-    stats["live_visitors"] = max(stats.get("live_visitors", 1) - 1, 0)
-    save_stats(stats)
+    try:
+        stats = load_stats()
+        stats["live_visitors"] = max(stats.get("live_visitors", 1) - 1, 0)
+        save_stats(stats)
+    except Exception as e:
+        print(f"⚠️ Fout in after_request: {e}")
     return response
+
+
 
 
 @app.route('/automatiseren')
