@@ -2,10 +2,10 @@ from flask import Flask, render_template, Response, jsonify, request
 from flask_mail import Mail, Message
 import os
 import random
-
+import json
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-app = Flask(__name__)
+
 
 # ✅ E-mailconfiguratie (Gebruik Gmail SMTP)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -38,6 +38,32 @@ def sitemap():
     """
     return Response(sitemap_xml, mimetype="application/xml")
 
+def load_stats():
+    if not os.path.exists("stats.json"):
+        return {"clicks": 0, "live_visitors": 0, "messages_sent": 0, "calculator_uses": 0}
+    with open("stats.json", "r") as f:
+        return json.load(f)
+
+def save_stats(data):
+    with open("stats.json", "w") as f:
+        json.dump(data, f)
+
+@app.before_request
+def track_clicks():
+    if request.endpoint not in ['static', 'dashboard_data', 'live_automation']:
+        stats = load_stats()
+        stats["clicks"] += 1
+        stats["live_visitors"] = min(stats.get("live_visitors", 0) + 1, 999)
+        save_stats(stats)
+
+@app.after_request
+def track_exit(response):
+    stats = load_stats()
+    stats["live_visitors"] = max(stats.get("live_visitors", 1) - 1, 0)
+    save_stats(stats)
+    return response
+
+
 @app.route('/automatiseren')
 def automatiseren():
     return render_template('automatiseren.html')
@@ -61,6 +87,9 @@ def send_message():
     message = request.form.get('message')
 
     if not name or not email or not message:
+        stats = load_stats()
+        stats["messages_sent"] += 1
+        save_stats(stats)
         return jsonify({"message": "⚠️ Vul alle velden in!"})
 
     # ✅ E-mail versturen
@@ -112,6 +141,9 @@ def dashboard_data():
 
 @app.route("/calculate_savings", methods=["POST"])
 def calculate_savings():
+    stats = load_stats()
+    stats["calculator_uses"] += 1
+    save_stats(stats)
     data = request.json
     task_time = float(data["task_time"])
     tasks_per_month = float(data["tasks_per_month"])
@@ -130,6 +162,20 @@ def calculate_savings():
         "cost_saved": round(cost_saved, 2),
         "roi_months": roi
     })
+@app.route("/stats")
+def stats():
+    key = request.args.get("key")
+    if key != "geheim123":  # Vervang dit door een unieke sleutel
+        return "Niet toegestaan", 403
+    return render_template("stats.html")
+
+@app.route("/get-stats")
+def get_stats():
+    key = request.args.get("key")
+    if key != "geheim123":
+        return jsonify({"error": "Niet toegestaan"}), 403
+    return jsonify(load_stats())
+
 
 if __name__ == "__main__":
     app.run(debug=False)
