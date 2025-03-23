@@ -2,8 +2,7 @@ from flask import Flask, render_template, Response, jsonify, request
 from flask_mail import Mail, Message
 import os
 import random
-import json
-from flask import g
+
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app = Flask(__name__)
@@ -131,41 +130,6 @@ def calculate_savings():
         "cost_saved": round(cost_saved, 2),
         "roi_months": roi
     })
-
-@app.route('/stats')
-def stats():
-    key = request.args.get('key')
-    if key != "Kp9a4x3qw0!":  # Vervang dit met jouw eigen key
-        return "Niet toegestaan", 403
-    return render_template('stats.html')
-
-def load_stats():
-    with open("stats.json", "r") as f:
-        return json.load(f)
-
-def save_stats(data):
-    with open("stats.json", "w") as f:
-        json.dump(data, f)
-
-@app.before_request
-def track_clicks():
-    if request.endpoint not in ['static', 'dashboard_data', 'live_automation']:
-        stats = load_stats()
-        stats['clicks'] += 1
-        save_stats(stats)
-@app.before_request
-def count_visitors():
-    stats = load_stats()
-    stats["live_visitors"] = min(stats.get("live_visitors", 0) + 1, 99)
-    save_stats(stats)
-
-@app.after_request
-def reduce_visitors(response):
-    stats = load_stats()
-    stats["live_visitors"] = max(stats.get("live_visitors", 1) - 1, 0)
-    save_stats(stats)
-    return response
-
 
 if __name__ == "__main__":
     app.run(debug=False)
