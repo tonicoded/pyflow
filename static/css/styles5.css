@@ -774,8 +774,12 @@ body:not(.light-mode) option {
 .contact-box.map {
     padding: 0;
     overflow: hidden;
+    aspect-ratio: 4 / 3;
     min-height: 280px;
+    max-height: 350px;
+    height: 100%;
 }
+
 
 .contact-box.map iframe {
     border-radius: 14px;
@@ -813,6 +817,8 @@ body:not(.light-mode) option {
     }
 
     .contact-box.map {
-        min-height: 240px;
+        aspect-ratio: 4 / 3;
+        min-height: 300px;
+        max-height: 400px;
+      }
     }
-}
