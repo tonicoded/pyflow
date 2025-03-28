@@ -652,3 +652,13 @@ button:hover {
     margin-right: 8px;
     color: #4db8ff;
 }
+.trust-info {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+}
+
+.light-mode .trust-info {
+    color: #444;
+}
