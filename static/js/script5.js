@@ -158,6 +158,8 @@ document.addEventListener("DOMContentLoaded", function () {
         logo.style.transform = "scale(1)";
         console.log("🌙 Dark mode actief, logo aangepast naar:", darkLogo);
     }
+
+    
     document.getElementById("contactForm").addEventListener("submit", async function (event) {
         event.preventDefault();
     
@@ -169,7 +171,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     
         let result = await response.json();
-    
         document.getElementById("form-status").textContent = result.message;
     });
     

@@ -74,40 +74,61 @@
     
 </div>
 
-<div id="contact-container">
-    <h1>Contacteer Ons</h1>
-    <p>Neem contact met ons op voor vragen, offertes of samenwerkingen.</p>
+<div id="contact-container" class="max-w-xl mx-auto p-6 bg-white shadow-md rounded-xl">
+    <h1 class="text-2xl font-bold mb-2 text-gray-800">Contacteer PyFlow</h1>
+    <p class="mb-4 text-gray-600">Heb je een vraag, wil je automatisering bespreken of een offerte ontvangen? Laat het ons weten.</p>
 
-    <div class="contact-form">
-        <form id="contactForm">
-            <label for="name">Naam</label>
-            <input type="text" id="name" name="name" placeholder="Jouw naam" required>
+    <form id="contactForm" class="space-y-4">
+        <div>
+            <label for="name" class="block font-medium text-gray-700">Naam</label>
+            <input type="text" id="name" name="name" required
+                   placeholder="Bijv. Jan Jansen"
+                   class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
 
-            <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" placeholder="jij@example.com" required>
+        <div>
+            <label for="email" class="block font-medium text-gray-700">E-mail</label>
+            <input type="email" id="email" name="email" required
+                   placeholder="jij@bedrijf.nl"
+                   class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
 
-            <label for="topic">Waar gaat je bericht over?</label>
-            <select id="topic" name="topic">
+        <div>
+            <label for="topic" class="block font-medium text-gray-700">Waar gaat je bericht over?</label>
+            <select id="topic" name="topic"
+                    class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">– Kies een onderwerp –</option>
-                <option value="Vraag">Algemene vraag</option>
-                <option value="Offerte">Offerte aanvraag</option>
-                <option value="Samenwerking">Samenwerking</option>
-                <option value="Anders">Anders</option>
+                <option value="Automatisering">Automatisering / Procesoptimalisatie</option>
+                <option value="Offerte">Offerte aanvragen</option>
+                <option value="Bug">Bug melden of technisch probleem</option>
+                <option value="Samenwerking">Samenwerking of idee</option>
+                <option value="Anders">Overig</option>
             </select>
+        </div>
 
-            <label for="subject">Onderwerp (optioneel)</label>
-            <input type="text" id="subject" name="subject" placeholder="Bijv. Nieuw projectidee">
+        <div>
+            <label for="subject" class="block font-medium text-gray-700">Onderwerp (optioneel)</label>
+            <input type="text" id="subject" name="subject"
+                   placeholder="Bijv. Automatisering magazijnproces"
+                   class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
 
-            <label for="message">Bericht</label>
-            <textarea id="message" name="message" rows="5" placeholder="Typ hier je bericht..." required></textarea>
+        <div>
+            <label for="message" class="block font-medium text-gray-700">Bericht</label>
+            <textarea id="message" name="message" rows="5" required
+                      placeholder="Vertel ons waar je hulp bij nodig hebt..."
+                      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
 
-            <label><input type="checkbox" name="replyWanted"> Ik wil graag een reactie</label>
+        <button type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200">
+            Verstuur bericht
+        </button>
 
-            <button type="submit">Verstuur</button>
-        </form>
-        <p id="form-status"></p>
-    </div>
+        <p id="form-status" class="mt-2 text-sm text-gray-700"></p>
+    </form>
 </div>
+
 
 
 </div>

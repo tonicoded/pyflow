@@ -62,36 +62,35 @@ def send_message():
     email = request.form.get('email')
     message = request.form.get('message')
     subject = request.form.get('subject', '')
-    topic = request.form.get('topic', 'Niet opgegeven')
-    reply_wanted = request.form.get('replyWanted', 'off')
+    topic = request.form.get('topic', 'Geen onderwerp opgegeven')
 
     if not name or not email or not message:
-        return jsonify({"message": "⚠️ Vul alle verplichte velden in!"})
+        return jsonify({"message": "⚠️ Vul alle verplichte velden in."})
 
     try:
         msg = Message(
-            subject=f"Nieuw Contactbericht van {name}",
+            subject=f"PyFlow Contact - {name}",
             recipients=["anthonyvvza@gmail.com"],
             body=f"""
-Nieuw bericht ontvangen via het contactformulier:
+📩 Nieuw bericht via het PyFlow contactformulier:
 
 👤 Naam: {name}
 📧 E-mail: {email}
-📂 Onderwerp: {subject if subject else 'Geen onderwerp'}
+📂 Onderwerp: {subject if subject else 'Geen onderwerp ingevuld'}
 📋 Categorie: {topic}
-📬 Antwoord gewenst: {'Ja' if reply_wanted == 'on' else 'Nee'}
 
-✉️ Bericht:
+📝 Bericht:
 {message}
             """.strip()
         )
 
         mail.send(msg)
-        return jsonify({"message": "✅ Bericht verzonden! We nemen spoedig contact op."})
+        return jsonify({"message": "✅ Bedankt! We nemen spoedig contact op."})
 
     except Exception as e:
         print(f"Fout bij verzenden e-mail: {e}")
-        return jsonify({"message": "⚠️ Er is iets misgegaan. Probeer later opnieuw."})
+        return jsonify({"message": "⚠️ Er ging iets mis. Probeer het later opnieuw."})
+
 
 
 
