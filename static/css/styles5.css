@@ -694,11 +694,11 @@ body:not(.light-mode) button:hover {
 #contact-info-wrapper {
     display: flex;
     flex-wrap: wrap;
-    gap: 30px;
     justify-content: center;
     align-items: stretch;
+    gap: 30px;
+    margin: 50px auto 40px auto;
     max-width: 1100px;
-    margin: 60px auto 40px auto;
     padding: 0 20px;
     box-sizing: border-box;
 }
@@ -783,10 +783,30 @@ body:not(.light-mode) button:hover {
     filter: none;
 }
 
-/* 📱 Responsive */
 @media (max-width: 768px) {
     #contact-info-wrapper {
         flex-direction: column;
-        gap: 20px;
+        align-items: center;
+    }
+
+    .info-card, .map-card {
+        width: 100%;
+        max-width: 500px;
+    }
+}
+.info-card, .map-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.map-card {
+    animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
