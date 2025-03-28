@@ -160,16 +160,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     document.getElementById("contactForm").addEventListener("submit", async function (event) {
         event.preventDefault();
-
-        let formData = new FormData(this);
-
+    
+        const formData = new FormData(this);
+        const processes = Array.from(document.querySelectorAll('input[name="processes"]:checked')).map(cb => cb.value);
+        formData.append("processes_selected", processes.join(', '));
+    
         let response = await fetch("/send-message", {
             method: "POST",
             body: formData
         });
-
+    
         let result = await response.json();
-
         document.getElementById("form-status").textContent = result.message;
     });
     
