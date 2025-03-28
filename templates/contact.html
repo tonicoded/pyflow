@@ -81,18 +81,34 @@
     <div class="contact-form">
         <form id="contactForm">
             <label for="name">Naam</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" placeholder="Jouw naam" required>
 
             <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" placeholder="jij@example.com" required>
+
+            <label for="topic">Waar gaat je bericht over?</label>
+            <select id="topic" name="topic">
+                <option value="">– Kies een onderwerp –</option>
+                <option value="Vraag">Algemene vraag</option>
+                <option value="Offerte">Offerte aanvraag</option>
+                <option value="Samenwerking">Samenwerking</option>
+                <option value="Anders">Anders</option>
+            </select>
+
+            <label for="subject">Onderwerp (optioneel)</label>
+            <input type="text" id="subject" name="subject" placeholder="Bijv. Nieuw projectidee">
 
             <label for="message">Bericht</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
+            <textarea id="message" name="message" rows="5" placeholder="Typ hier je bericht..." required></textarea>
+
+            <label><input type="checkbox" name="replyWanted"> Ik wil graag een reactie</label>
 
             <button type="submit">Verstuur</button>
         </form>
         <p id="form-status"></p>
     </div>
+</div>
+
 
 </div>
 
