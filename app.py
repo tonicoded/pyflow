@@ -2,7 +2,7 @@ from flask import Flask, render_template, Response, jsonify, request
 from flask_mail import Mail, Message
 import os
 import random
-
+from flask import send_from_directory
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -37,7 +37,9 @@ def sitemap():
     </urlset>
     """
     return Response(sitemap_xml, mimetype="application/xml")
-
+@app.route('/favicon.png')
+def favicon():
+    return send_from_directory('static', 'favicon.png')
 @app.route('/automatiseren')
 def automatiseren():
     return render_template('automatiseren.html')
