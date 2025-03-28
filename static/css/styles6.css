@@ -710,7 +710,7 @@ body:not(.light-mode) option {
     color: white;
 }
 #pricing-section {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 80px auto;
     padding: 0 20px;
     text-align: center;
@@ -734,8 +734,15 @@ body:not(.light-mode) option {
 
 .pricing-columns {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 30px;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .pricing-columns {
+        grid-template-columns: 1fr;
+    }
 }
 
 .pricing-box {
@@ -799,6 +806,7 @@ body:not(.light-mode) option {
 
 .center-button {
     margin-top: 50px;
+    text-align: center;
 }
 
 .cta-button {
@@ -810,6 +818,7 @@ body:not(.light-mode) option {
     text-decoration: none;
     transition: all 0.3s ease-in-out;
     font-size: 1.1rem;
+    display: inline-block;
 }
 
 .cta-button:hover {
