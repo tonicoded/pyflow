@@ -60,49 +60,23 @@ def contact():
 def send_message():
     name = request.form.get('name')
     email = request.form.get('email')
-    company = request.form.get('company')
-    sector = request.form.get('sector')
-    processes = request.form.get('processes_selected')
-    current = request.form.get('currentWorkflow')
-    improvement = request.form.get('improvement')
-    deadline = request.form.get('deadline')
-    budget = request.form.get('budget')
     message = request.form.get('message')
 
-    if not name or not email or not company:
-        return jsonify({"message": "⚠️ Vul alle verplichte velden in!"})
+    if not name or not email or not message:
+        return jsonify({"message": "⚠️ Vul alle velden in!"})
 
+    # ✅ E-mail versturen
     try:
-        msg = Message(subject=f"Nieuwe automatiseringsaanvraag van {company}",
-                      recipients=["anthonyvvza@gmail.com"],
-                      body=f"""
-Bedrijf: {company}
-Sector: {sector}
-Contactpersoon: {name}
-E-mail: {email}
+        msg = Message(subject=f"Nieuw Contactbericht van {name}",
+                      recipients=["anthonyvvza@gmail.com"],  # 🔹 Jouw e-mailadres
+                      body=f"Naam: {name}\nE-mail: {email}\n\nBericht:\n{message}")
 
-Processen die geautomatiseerd moeten worden:
-{processes}
-
-Huidige werkwijze:
-{current}
-
-Wat wil je verbeteren?
-{improvement}
-
-Gewenste deadline: {deadline}
-Budgetindicatie: {budget}
-
-Aanvullende opmerkingen:
-{message}
-                      """)
         mail.send(msg)
-        return jsonify({"message": "✅ Aanvraag verstuurd! We nemen spoedig contact op."})
+        return jsonify({"message": "✅ Bericht verzonden! We nemen spoedig contact op."})
 
     except Exception as e:
         print(f"Fout bij verzenden e-mail: {e}")
         return jsonify({"message": "⚠️ Er is iets misgegaan. Probeer later opnieuw."})
-
 
 
 @app.route('/live-automation')

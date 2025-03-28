@@ -16,7 +16,6 @@
     <meta name="twitter:image" content="https://www.pyflow.nl/static/logo.png">
     <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="shortcut icon" type="image/png" href="/favicon.png">
-<script src="https://cdn.tailwindcss.com"></script>
 
     <title>PyFlow - Contact opnemen</title>
     <script defer src="https://vercel.analytics.dev/script.js"></script>
@@ -75,79 +74,25 @@
     
 </div>
 
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-white dark:bg-zinc-900 rounded-xl shadow-lg text-zinc-900 dark:text-white">
-    <h2 class="text-2xl font-bold mb-6 text-center">Aanvraag automatisering</h2>
-    <form id="contactForm" class="space-y-4">
+<div id="contact-container">
+    <h1>Contacteer Ons</h1>
+    <p>Neem contact met ons op voor vragen, offertes of samenwerkingen.</p>
 
-        <div>
-            <label for="company" class="block font-semibold">Bedrijfsnaam</label>
-            <input type="text" id="company" name="company" required class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-        </div>
+    <div class="contact-form">
+        <form id="contactForm">
+            <label for="name">Naam</label>
+            <input type="text" id="name" name="name" required>
 
-        <div>
-            <label for="sector" class="block font-semibold">Sector / Type bedrijf</label>
-            <input type="text" id="sector" name="sector" required class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-        </div>
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required>
 
-        <div>
-            <label for="name" class="block font-semibold">Contactpersoon</label>
-            <input type="text" id="name" name="name" required class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-        </div>
+            <label for="message">Bericht</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
 
-        <div>
-            <label for="email" class="block font-semibold">E-mail</label>
-            <input type="email" id="email" name="email" required class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-        </div>
-
-        <div>
-            <label for="processes" class="block font-semibold mb-2">Welke processen wil je automatiseren?</label>
-            <select id="processes" name="processes" multiple
-                class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm">
-                <option value="Facturatie">Facturatie</option>
-                <option value="Voorraadbeheer">Voorraadbeheer</option>
-                <option value="Rapportage">Rapportage</option>
-                <option value="Bestelproces">Bestelproces</option>
-                <option value="Klantcommunicatie">Klantcommunicatie</option>
-                <option value="Anders">Anders</option>
-            </select>
-            <p class="text-xs text-zinc-500 mt-1">Tip: houd Ctrl (Windows) of ⌘ (Mac) ingedrukt om meerdere te selecteren.</p>
-        </div>
-        
-        
-
-        <div>
-            <label for="currentWorkflow" class="block font-semibold">Huidige werkwijze</label>
-            <textarea id="currentWorkflow" name="currentWorkflow" rows="3" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800"></textarea>
-        </div>
-
-        <div>
-            <label for="improvement" class="block font-semibold">Wat wil je verbeteren?</label>
-            <textarea id="improvement" name="improvement" rows="3" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800"></textarea>
-        </div>
-
-        <div>
-            <label for="deadline" class="block font-semibold">Gewenste deadline</label>
-            <input type="date" id="deadline" name="deadline" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-        </div>
-
-        <div>
-            <label for="budget" class="block font-semibold">Budgetindicatie (optioneel)</label>
-            <input type="text" id="budget" name="budget" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
-        </div>
-
-        <div>
-            <label for="message" class="block font-semibold">Aanvullende opmerkingen / vraag</label>
-            <textarea id="message" name="message" rows="4" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800"></textarea>
-        </div>
-
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition duration-200">
-            Verstuur aanvraag
-        </button>
-
-        <p id="form-status" class="text-center mt-2 text-green-500 font-medium"></p>
-    </form>
-</div>
-
+            <button type="submit">Verstuur</button>
+        </form>
+        <p id="form-status"></p>
+    </div>
 
 </div>
 
