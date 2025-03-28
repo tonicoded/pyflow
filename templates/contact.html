@@ -74,48 +74,74 @@
     
 </div>
 
-<form id="contactForm">
-    <label for="company">Bedrijfsnaam</label>
-    <input type="text" id="company" name="company" required>
+<div class="max-w-3xl mx-auto p-6 bg-white dark:bg-zinc-900 rounded-xl shadow-lg mt-10 text-zinc-900 dark:text-white">
+    <h2 class="text-2xl font-bold mb-6 text-center">Aanvraag automatisering</h2>
+    <form id="contactForm" class="space-y-4">
 
-    <label for="sector">Sector / Type bedrijf</label>
-    <input type="text" id="sector" name="sector" required>
+        <div>
+            <label for="company" class="block font-semibold">Bedrijfsnaam</label>
+            <input type="text" id="company" name="company" required class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+        </div>
 
-    <label for="name">Contactpersoon</label>
-    <input type="text" id="name" name="name" required>
+        <div>
+            <label for="sector" class="block font-semibold">Sector / Type bedrijf</label>
+            <input type="text" id="sector" name="sector" required class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+        </div>
 
-    <label for="email">E-mail</label>
-    <input type="email" id="email" name="email" required>
+        <div>
+            <label for="name" class="block font-semibold">Contactpersoon</label>
+            <input type="text" id="name" name="name" required class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+        </div>
 
-    <label>Welke processen wil je automatiseren?</label>
-    <div class="checkbox-group">
-        <label><input type="checkbox" name="processes" value="Facturatie"> Facturatie</label>
-        <label><input type="checkbox" name="processes" value="Voorraadbeheer"> Voorraadbeheer</label>
-        <label><input type="checkbox" name="processes" value="Rapportage"> Rapportage</label>
-        <label><input type="checkbox" name="processes" value="Bestelproces"> Bestelproces</label>
-        <label><input type="checkbox" name="processes" value="Klantcommunicatie"> Klantcommunicatie</label>
-        <label><input type="checkbox" name="processes" value="Anders"> Anders</label>
-    </div>
+        <div>
+            <label for="email" class="block font-semibold">E-mail</label>
+            <input type="email" id="email" name="email" required class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+        </div>
 
-    <label for="currentWorkflow">Huidige werkwijze (kort omschreven)</label>
-    <textarea id="currentWorkflow" name="currentWorkflow" rows="3"></textarea>
+        <div>
+            <label class="block font-semibold mb-2">Welke processen wil je automatiseren?</label>
+            <div class="grid grid-cols-2 gap-2">
+                <label><input type="checkbox" name="processes" value="Facturatie" class="mr-2"> Facturatie</label>
+                <label><input type="checkbox" name="processes" value="Voorraadbeheer" class="mr-2"> Voorraadbeheer</label>
+                <label><input type="checkbox" name="processes" value="Rapportage" class="mr-2"> Rapportage</label>
+                <label><input type="checkbox" name="processes" value="Bestelproces" class="mr-2"> Bestelproces</label>
+                <label><input type="checkbox" name="processes" value="Klantcommunicatie" class="mr-2"> Klantcommunicatie</label>
+                <label><input type="checkbox" name="processes" value="Anders" class="mr-2"> Anders</label>
+            </div>
+        </div>
 
-    <label for="improvement">Wat wil je verbeteren?</label>
-    <textarea id="improvement" name="improvement" rows="3"></textarea>
+        <div>
+            <label for="currentWorkflow" class="block font-semibold">Huidige werkwijze</label>
+            <textarea id="currentWorkflow" name="currentWorkflow" rows="3" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800"></textarea>
+        </div>
 
-    <label for="deadline">Gewenste deadline</label>
-    <input type="date" id="deadline" name="deadline">
+        <div>
+            <label for="improvement" class="block font-semibold">Wat wil je verbeteren?</label>
+            <textarea id="improvement" name="improvement" rows="3" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800"></textarea>
+        </div>
 
-    <label for="budget">Budgetindicatie (optioneel)</label>
-    <input type="text" id="budget" name="budget">
+        <div>
+            <label for="deadline" class="block font-semibold">Gewenste deadline</label>
+            <input type="date" id="deadline" name="deadline" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+        </div>
 
-    <label for="message">Aanvullende opmerkingen / vraag</label>
-    <textarea id="message" name="message" rows="4"></textarea>
+        <div>
+            <label for="budget" class="block font-semibold">Budgetindicatie (optioneel)</label>
+            <input type="text" id="budget" name="budget" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+        </div>
 
-    <button type="submit">Verstuur aanvraag</button>
-</form>
+        <div>
+            <label for="message" class="block font-semibold">Aanvullende opmerkingen / vraag</label>
+            <textarea id="message" name="message" rows="4" class="w-full p-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800"></textarea>
+        </div>
 
-<p id="form-status"></p>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition duration-200">
+            Verstuur aanvraag
+        </button>
+
+        <p id="form-status" class="text-center mt-2 text-green-500 font-medium"></p>
+    </form>
+</div>
 
 
 </div>
