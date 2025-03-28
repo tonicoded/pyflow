@@ -710,21 +710,21 @@ body:not(.light-mode) option {
     color: white;
 }
 #pricing-section {
-    max-width: 1100px;
-    margin: 60px auto;
+    max-width: 1200px;
+    margin: 70px auto;
     padding: 0 20px;
     text-align: center;
 }
 
 .pricing-title {
-    font-size: 2.5rem;
+    font-size: 2.7rem;
     font-weight: 700;
     margin-bottom: 10px;
 }
 
 .pricing-subtitle {
     font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.7);
     margin-bottom: 40px;
 }
 
@@ -732,69 +732,84 @@ body:not(.light-mode) option {
     color: #444;
 }
 
-.pricing-grid {
+.pricing-columns {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 30px;
 }
 
-.pricing-card {
+.pricing-box {
     background: rgba(255, 255, 255, 0.05);
-    padding: 25px;
+    padding: 25px 30px;
     border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     text-align: left;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease;
 }
 
-.pricing-card:hover {
+.pricing-box:hover {
     transform: translateY(-5px);
 }
 
-.light-mode .pricing-card {
+.light-mode .pricing-box {
     background: rgba(255, 255, 255, 0.95);
     color: #222;
 }
 
-.price {
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 10px 0;
-    color: #4db8ff;
+.pricing-box h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-.light-mode .price {
+.price-highlight {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4db8ff;
+    margin: 15px 0;
+}
+
+.light-mode .price-highlight {
     color: #007bff;
 }
 
-.pricing-card ul {
-    margin-top: 15px;
-    padding-left: 20px;
-}
-
-.pricing-card li {
-    margin-bottom: 8px;
+.pricing-box ul {
     list-style: none;
+    padding: 0;
+    margin-top: 15px;
 }
 
-.pricing-card li i {
+.pricing-box li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pricing-box i {
     color: #4db8ff;
-    margin-right: 8px;
+    min-width: 20px;
+}
+
+.light-mode .pricing-box i {
+    color: #007bff;
 }
 
 .center-button {
-    margin-top: 40px;
+    margin-top: 50px;
 }
 
 .cta-button {
     background: linear-gradient(45deg, #4db8ff, #007bff);
-    padding: 14px 26px;
-    font-size: 1.1rem;
+    padding: 14px 30px;
     border-radius: 10px;
     color: white;
+    font-weight: bold;
     text-decoration: none;
-    font-weight: 600;
     transition: all 0.3s ease-in-out;
+    font-size: 1.1rem;
 }
 
 .cta-button:hover {
