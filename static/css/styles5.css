@@ -652,3 +652,42 @@ button:hover {
 .light-mode .contact-subtitle {
     color: #444;
 }
+/* 🎯 Verbeterde velden in dark mode */
+body:not(.light-mode) input,
+body:not(.light-mode) textarea,
+body:not(.light-mode) select {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.05);
+}
+
+body:not(.light-mode) input::placeholder,
+body:not(.light-mode) textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+body:not(.light-mode) select {
+    appearance: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* ⬇️ Voeg een pijltje toe aan select */
+body:not(.light-mode) select {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+}
+
+/* 🎯 Verbeter submit-knop in dark mode */
+body:not(.light-mode) button {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: white;
+    font-weight: bold;
+}
+
+body:not(.light-mode) button:hover {
+    background: linear-gradient(45deg, #0056b3, #003f7f);
+}
