@@ -637,3 +637,18 @@ button:hover {
     color: #4db8ff;
     transition: opacity 0.3s ease-in-out;
 }
+.contact-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.contact-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 20px;
+}
+
+.light-mode .contact-subtitle {
+    color: #444;
+}
