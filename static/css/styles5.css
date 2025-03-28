@@ -732,11 +732,17 @@ body:not(.light-mode) button:hover {
 }
 
 .info-card li {
-    margin-bottom: 12px;
-    font-size: 1rem;
+    margin-bottom: 16px;
+    font-size: 1.05rem;
     display: flex;
     align-items: center;
     gap: 10px;
+}
+.info-card li span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
 }
 
 .info-card a {
