@@ -58,7 +58,7 @@ def besparings_calculator():
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.html')
+    return render_template("contact.html", time=int(time.time()))
 
 @app.route('/send-message', methods=['POST'])
 def send_message():
