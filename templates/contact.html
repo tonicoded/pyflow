@@ -74,31 +74,27 @@
     
 </div>
 
-<div id="contact-container" class="max-w-xl mx-auto p-6 bg-white dark:bg-gray-800 shadow-md rounded-xl text-gray-800 dark:text-white">
-    <h1 class="text-2xl font-bold mb-2 text-gray-800 dark:text-white">Contacteer PyFlow</h1>
-    <p class="mb-4 text-gray-600 dark:text-gray-300">
-        Heb je een vraag, wil je automatisering bespreken of een offerte ontvangen?<br>Laat het ons weten.
+<div id="contact-container" class="contact-wrapper">
+    <h1 class="contact-title">Contacteer PyFlow</h1>
+    <p class="contact-subtitle">
+        Heb je een vraag, wil je automatisering bespreken of een offerte ontvangen?<br>
+        Laat het ons weten.
     </p>
 
-    <form id="contactForm" class="space-y-4">
-        <div>
-            <label for="name" class="block font-medium text-gray-800 dark:text-gray-200">Naam</label>
-            <input type="text" id="name" name="name" required
-                   placeholder="Bijv. Jan Jansen"
-                   class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <form id="contactForm" class="contact-form">
+        <div class="form-group">
+            <label for="name">Naam</label>
+            <input type="text" id="name" name="name" required placeholder="Bijv. Jan Jansen">
         </div>
 
-        <div>
-            <label for="email" class="block font-medium text-gray-800 dark:text-gray-200">E-mail</label>
-            <input type="email" id="email" name="email" required
-                   placeholder="jij@bedrijf.nl"
-                   class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required placeholder="jij@bedrijf.nl">
         </div>
 
-        <div>
-            <label for="topic" class="block font-medium text-gray-800 dark:text-gray-200">Waar gaat je bericht over?</label>
-            <select id="topic" name="topic"
-                    class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="form-group">
+            <label for="topic">Waar gaat je bericht over?</label>
+            <select id="topic" name="topic">
                 <option value="">– Kies een onderwerp –</option>
                 <option value="Automatisering">Automatisering / Procesoptimalisatie</option>
                 <option value="Offerte">Offerte aanvragen</option>
@@ -108,28 +104,22 @@
             </select>
         </div>
 
-        <div>
-            <label for="subject" class="block font-medium text-gray-800 dark:text-gray-200">Onderwerp (optioneel)</label>
-            <input type="text" id="subject" name="subject"
-                   placeholder="Bijv. Automatisering magazijnproces"
-                   class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="form-group">
+            <label for="subject">Onderwerp (optioneel)</label>
+            <input type="text" id="subject" name="subject" placeholder="Bijv. Automatisering magazijnproces">
         </div>
 
-        <div>
-            <label for="message" class="block font-medium text-gray-800 dark:text-gray-200">Bericht</label>
-            <textarea id="message" name="message" rows="5" required
-                      placeholder="Vertel ons waar je hulp bij nodig hebt..."
-                      class="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        <div class="form-group">
+            <label for="message">Bericht</label>
+            <textarea id="message" name="message" rows="5" required placeholder="Vertel ons waar je hulp bij nodig hebt..."></textarea>
         </div>
 
-        <button type="submit"
-                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200">
-            Verstuur bericht
-        </button>
+        <button type="submit" class="submit-btn">Verstuur bericht</button>
 
-        <p id="form-status" class="mt-2 text-sm text-green-500 dark:text-green-400"></p>
+        <p id="form-status" class="form-status"></p>
     </form>
 </div>
+
 
 
 
