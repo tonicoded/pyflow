@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
     
         const formData = new FormData(this);
-        const processes = Array.from(document.querySelectorAll('input[name="processes"]:checked')).map(cb => cb.value);
+        const processes = Array.from(document.getElementById('processes').selectedOptions).map(option => option.value);
         formData.append("processes_selected", processes.join(', '));
     
         let response = await fetch("/send-message", {
