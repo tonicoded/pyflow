@@ -691,3 +691,21 @@ body:not(.light-mode) button {
 body:not(.light-mode) button:hover {
     background: linear-gradient(45deg, #0056b3, #003f7f);
 }
+/* Fix voor donkere modus select-menu opties */
+body:not(.light-mode) select,
+body:not(.light-mode) option {
+    color: white;
+    background-color: #1a1a1a;
+}
+/* Algemeen styling voor <select> dropdown in dark mode */
+body:not(.light-mode) select {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Zichtbare dropdown-waarden */
+body:not(.light-mode) option {
+    background-color: #1a1a1a;
+    color: white;
+}
