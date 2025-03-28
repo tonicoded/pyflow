@@ -743,9 +743,10 @@ body:not(.light-mode) option {
 .contact-content {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center; /* Zorgt voor verticale centrering */
     gap: 30px;
     flex-wrap: wrap;
+    height: 100%; /* Noodzakelijk om goed te centreren in de box */
 }
 
 .contact-info {

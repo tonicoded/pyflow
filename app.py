@@ -21,7 +21,7 @@ mail = Mail(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template("index.html", time=int(time.time()))
 
 @app.route('/robots.txt')
 def robots():
@@ -43,19 +43,19 @@ def favicon():
     return send_from_directory('static', 'favicon.png')
 @app.route('/automatiseren')
 def automatiseren():
-    return render_template('automatiseren.html')
+    return render_template("automatiseren.html", time=int(time.time()))
 
 @app.route('/overons')
 def overons():
-    return render_template('overons.html')
+    return render_template("overons.html", time=int(time.time()))
 
 @app.route('/prijsindicatie')
 def prijsindicatie():
-    return render_template('prijsindicatie.html')
+    return render_template("prijsindicatie.html", time=int(time.time()))
 
 @app.route('/besparings-calculator')
 def besparings_calculator():
-    return render_template('timetracker.html')
+    return render_template("timetracker.html", time=int(time.time()))
 
 @app.route('/contact')
 def contact():
