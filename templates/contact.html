@@ -75,7 +75,7 @@
     
 </div>
 
-<div class="max-w-3xl mx-auto p-6 bg-white dark:bg-zinc-900 rounded-xl shadow-lg mt-10 text-zinc-900 dark:text-white">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 bg-white dark:bg-zinc-900 rounded-xl shadow-lg text-zinc-900 dark:text-white">
     <h2 class="text-2xl font-bold mb-6 text-center">Aanvraag automatisering</h2>
     <form id="contactForm" class="space-y-4">
 
@@ -100,16 +100,35 @@
         </div>
 
         <div>
-            <label class="block font-semibold mb-2">Welke processen wil je automatiseren?</label>
-            <div class="grid grid-cols-2 gap-2">
-                <label><input type="checkbox" name="processes" value="Facturatie" class="mr-2"> Facturatie</label>
-                <label><input type="checkbox" name="processes" value="Voorraadbeheer" class="mr-2"> Voorraadbeheer</label>
-                <label><input type="checkbox" name="processes" value="Rapportage" class="mr-2"> Rapportage</label>
-                <label><input type="checkbox" name="processes" value="Bestelproces" class="mr-2"> Bestelproces</label>
-                <label><input type="checkbox" name="processes" value="Klantcommunicatie" class="mr-2"> Klantcommunicatie</label>
-                <label><input type="checkbox" name="processes" value="Anders" class="mr-2"> Anders</label>
+            <label class="block font-semibold mb-3">Welke processen wil je automatiseren?</label>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <label class="flex items-center gap-2 p-2 rounded border border-gray-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 cursor-pointer">
+                    <input type="checkbox" name="processes" value="Facturatie" class="form-checkbox accent-blue-600">
+                    <span>Facturatie</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded border border-gray-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 cursor-pointer">
+                    <input type="checkbox" name="processes" value="Voorraadbeheer" class="form-checkbox accent-blue-600">
+                    <span>Voorraadbeheer</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded border border-gray-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 cursor-pointer">
+                    <input type="checkbox" name="processes" value="Rapportage" class="form-checkbox accent-blue-600">
+                    <span>Rapportage</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded border border-gray-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 cursor-pointer">
+                    <input type="checkbox" name="processes" value="Bestelproces" class="form-checkbox accent-blue-600">
+                    <span>Bestelproces</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded border border-gray-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 cursor-pointer">
+                    <input type="checkbox" name="processes" value="Klantcommunicatie" class="form-checkbox accent-blue-600">
+                    <span>Klantcommunicatie</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded border border-gray-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 cursor-pointer">
+                    <input type="checkbox" name="processes" value="Anders" class="form-checkbox accent-blue-600">
+                    <span>Anders</span>
+                </label>
             </div>
         </div>
+        
 
         <div>
             <label for="currentWorkflow" class="block font-semibold">Huidige werkwijze</label>
