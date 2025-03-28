@@ -637,3 +637,18 @@ button:hover {
     color: #4db8ff;
     transition: opacity 0.3s ease-in-out;
 }
+#contact-info {
+    margin-top: 30px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+}
+
+.light-mode #contact-info {
+    color: #333;
+}
+
+#contact-info i {
+    margin-right: 8px;
+    color: #4db8ff;
+}
