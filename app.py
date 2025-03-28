@@ -48,6 +48,10 @@ def automatiseren():
 def overons():
     return render_template('overons.html')
 
+@app.route('/prijsindicatie')
+def prijsindicatie():
+    return render_template('prijsindicatie.html')
+
 @app.route('/besparings-calculator')
 def besparings_calculator():
     return render_template('timetracker.html')
