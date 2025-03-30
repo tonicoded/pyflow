@@ -25,7 +25,13 @@ def index():
 
 @app.route('/robots.txt')
 def robots():
-    return Response("User-agent: *\nAllow: /\nSitemap: https://www.pyflow.nl/sitemap.xml", mimetype="text/plain")
+    return Response(
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Sitemap: https://www.pyflow.nl/sitemap.xml",
+        mimetype="text/plain"
+    )
+
 
 @app.route('/sitemap.xml')
 def sitemap():
@@ -35,9 +41,14 @@ def sitemap():
         <url><loc>https://www.pyflow.nl/contact</loc><priority>0.8</priority></url>
         <url><loc>https://www.pyflow.nl/overons</loc><priority>0.7</priority></url>
         <url><loc>https://www.pyflow.nl/besparings-calculator</loc><priority>0.8</priority></url>
+        <url><loc>https://www.pyflow.nl/automatiseren</loc><priority>0.9</priority></url>
+        <url><loc>https://www.pyflow.nl/prijsindicatie</loc><priority>0.7</priority></url>
+        <url><loc>https://www.pyflow.nl/live-automation</loc><priority>0.6</priority></url>
+        <url><loc>https://www.pyflow.nl/dashboard-data</loc><priority>0.6</priority></url>
     </urlset>
     """
     return Response(sitemap_xml, mimetype="application/xml")
+
 @app.route('/favicon.png')
 def favicon():
     return send_from_directory('static', 'favicon.png')
