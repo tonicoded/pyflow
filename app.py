@@ -4,6 +4,7 @@ import os
 import random
 from flask import send_from_directory
 import time
+from flask import request
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -31,6 +32,16 @@ def robots():
         "Sitemap: https://www.pyflow.nl/sitemap.xml",
         mimetype="text/plain"
     )
+
+@app.context_processor
+def inject_canonical_url():
+    return {'canonical_url': request.url}
+
+@app.before_request
+def force_https_and_www():
+    url = request.url
+    if request.host != 'www.pyflow.nl':
+        return redirect(url.replace(request.host, 'www.pyflow.nl'), code=301)
 
 
 @app.route('/sitemap.xml')
