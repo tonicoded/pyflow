@@ -4,7 +4,8 @@ import os
 import random
 from flask import send_from_directory
 import time
-from flask import request
+from flask import request, redirect
+
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -39,9 +40,15 @@ def inject_canonical_url():
 
 @app.before_request
 def force_https_and_www():
-    url = request.url
+    # Alleen doorgaan als host niet www.pyflow.nl
     if request.host != 'www.pyflow.nl':
-        return redirect(url.replace(request.host, 'www.pyflow.nl'), code=301)
+        # Maak nieuwe URL met www
+        new_url = request.url.replace(request.host, 'www.pyflow.nl')
+        # Vervang http met https indien nodig
+        if request.scheme == 'http':
+            new_url = new_url.replace('http://', 'https://')
+        return redirect(new_url, code=301)
+
 
 
 @app.route('/sitemap.xml')
