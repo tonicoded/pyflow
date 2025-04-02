@@ -1,27 +1,65 @@
 <!DOCTYPE html>
 <html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <meta name="description" content="PyFlow biedt op maat gemaakte automatiseringsoplossingen voor bedrijven. Bespaar tijd en geld met slimme software.">
-    <meta name="keywords" content="automatisering, software ontwikkeling, procesoptimalisatie, besparingscalculator, PyFlow, Python-oplossingen">
-    <meta property="og:title" content="PyFlow - Automatisering voor Bedrijven">
-    <meta property="og:description" content="Bespaar tijd en geld met slimme softwareoplossingen van PyFlow.">
-    <meta property="og:image" content="https://www.pyflow.nl/static/logo.png">
-    <meta property="og:url" content="https://www.pyflow.nl/">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PyFlow - Automatisering voor Bedrijven">
-    <meta name="twitter:description" content="Bespaar tijd en geld met slimme softwareoplossingen van PyFlow.">
-    <meta name="twitter:image" content="https://www.pyflow.nl/static/logo.png">
-    <link rel="icon" type="image/png" href="/favicon.png">
-<link rel="shortcut icon" type="image/png" href="/favicon.png">
-
-    <title>PyFlow - Besparings Calculator</title>
-    <script defer src="https://vercel.analytics.dev/script.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles4.css') }}?v={{ time }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+      
+        <title>PyFlow - Besparings Calculator</title>
+        <link rel="canonical" href="https://www.pyflow.nl/besparings-calculator">
+      
+        <!-- SEO Meta -->
+        <meta name="description" content="Bereken direct hoeveel tijd en geld jouw bedrijf kan besparen met automatisering. Gebruik de interactieve besparingscalculator van PyFlow.">
+        <meta name="keywords" content="besparingscalculator, automatisering kosten, tijd besparen, besparingen berekenen, timetracker, PyFlow calculator">
+      
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+        <link rel="icon" type="image/png" href="/static/favicon.png?v=2">
+        <link rel="shortcut icon" href="/static/favicon.png?v=2">
+        <link rel="apple-touch-icon" href="/static/logo.png">
+      
+        <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+        <meta property="og:title" content="Besparings Calculator | PyFlow">
+        <meta property="og:description" content="Ontdek met onze calculator hoeveel je bespaart door processen te automatiseren. Snel inzicht in kostenbesparing en ROI.">
+        <meta property="og:image" content="https://www.pyflow.nl/static/logo.png">
+        <meta property="og:url" content="https://www.pyflow.nl/besparings-calculator">
+        <meta property="og:type" content="website">
+      
+        <!-- Twitter Cards -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Besparings Calculator | PyFlow">
+        <meta name="twitter:description" content="Bereken eenvoudig hoeveel jouw bedrijf bespaart door automatisering. Probeer het direct.">
+        <meta name="twitter:image" content="https://www.pyflow.nl/static/logo.png">
+      
+        <!-- Structured Data: WebApplication / Calculator -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Besparings Calculator",
+          "url": "https://www.pyflow.nl/besparings-calculator",
+          "description": "Een interactieve tool van PyFlow om besparingen door automatisering te berekenen.",
+          "applicationCategory": "BusinessApplication",
+          "publisher": {
+            "@type": "Organization",
+            "name": "PyFlow",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.pyflow.nl/static/logo.png"
+            }
+          }
+        }
+        </script>
+      
+        <!-- Analytics -->
+        <script defer src="https://vercel.analytics.dev/script.js"></script>
+      
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles4.css') }}?v={{ time }}">
+      
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+      </head>
+      
 <body>
     
     <!-- Dark Mode Toggle Switch -->
