@@ -34,6 +34,11 @@ def robots():
         mimetype="text/plain"
     )
 
+@app.route('/favicon.ico')
+def favicon_ico():
+    return send_from_directory('static', 'favicon.ico')
+
+
 @app.context_processor
 def inject_canonical_url():
     return {'canonical_url': request.url}
