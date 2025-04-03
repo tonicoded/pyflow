@@ -870,3 +870,7 @@ body:not(.light-mode) option {
         text-align: center;
     }
 }
+a:hover {
+    color: #a5d6a7;
+  }
+  

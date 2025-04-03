@@ -34,100 +34,141 @@
   <!-- Blog Style Injectie -->
   <style>
     .blog-article {
-      max-width: 800px;
-      margin: 2rem auto;
-      background-color: #1c1c1c;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.4);
-      line-height: 1.7;
+      max-width: 900px;
+      margin: 3rem auto;
+      background-color: #1e1e1e;
+      padding: 3rem;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      line-height: 1.75;
+      font-family: 'Segoe UI', sans-serif;
+      transition: all 0.3s ease;
     }
-
+  
+    body.light-mode .blog-article {
+      background-color: #fdfdfd;
+      color: #222;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+  
     .blog-article h1 {
-      font-size: 2rem;
-      color: #90caf9;
-      margin-bottom: 1rem;
+      font-size: 2.2rem;
+      color: #64b5f6;
+      margin-bottom: 1.2rem;
+      position: relative;
     }
-
+  
+    .blog-article h1::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(to right, #64b5f6, #81c784);
+      margin-top: 0.6rem;
+      border-radius: 2px;
+    }
+  
     .blog-article h2 {
-  font-size: 1.4rem;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-  color: #7bb9ff;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-
-.blog-article p {
-  margin-bottom: 1.4rem;
-  color: #ddd;
-  font-size: 1.05rem;
-}
-
-
+      font-size: 1.4rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: #81c784;
+      font-weight: 600;
+      border-left: 4px solid #81c784;
+      padding-left: 0.8rem;
+    }
+  
+    .blog-article p {
+      margin-bottom: 1.4rem;
+      color: #ccc;
+      font-size: 1.07rem;
+    }
+  
+    body.light-mode .blog-article p {
+      color: #333;
+    }
+  
     .blog-article ul {
       margin: 0 0 1rem 1.2rem;
       padding-left: 1rem;
     }
-
+  
     .blog-article li {
       margin-bottom: 0.5rem;
       color: #ccc;
     }
-
+  
+    body.light-mode .blog-article li {
+      color: #333;
+    }
+  
     .blog-article .publish-date {
       font-size: 0.9rem;
       color: #aaa;
       margin-bottom: 1.5rem;
     }
-
+  
+    body.light-mode .blog-article .publish-date {
+      color: #777;
+    }
+  
     .blog-article a {
       color: #81c784;
+      font-weight: 600;
       text-decoration: none;
+      transition: all 0.2s ease;
     }
-
+  
     .blog-article a:hover {
       text-decoration: underline;
+      color: #a5d6a7;
     }
-
+  
+    .voordelen-lijst {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+  
+    .voordeel {
+      background-color: rgba(255, 255, 255, 0.04);
+      padding: 1rem 1.3rem;
+      border-radius: 12px;
+      font-size: 1.02rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #ddd;
+      transition: all 0.3s ease;
+    }
+  
+    .voordeel::before {
+      content: "✔";
+      margin-right: 0.5rem;
+      color: #81c784;
+      font-weight: bold;
+    }
+  
+    body.light-mode .voordeel {
+      background-color: #f3f3f3;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+  
     @media screen and (max-width: 600px) {
       .blog-article {
-        padding: 1rem;
+        padding: 1.5rem;
       }
-
+  
       .blog-article h1 {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
       }
-
+  
       .blog-article h2 {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
       }
     }
-    .voordelen-lijst {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.voordeel {
-  background-color: rgba(255, 255, 255, 0.05);
-  padding: 1rem 1.2rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  color: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-body.light-mode .voordeel {
-  background-color: #f3f3f3;
-  color: #333;
-  border: 1px solid #ddd;
-}
-
   </style>
+  
 </head>
 
 <body>
