@@ -88,7 +88,7 @@ def overons():
 @app.route('/blog')
 def blog():
     return render_template("blog.html", time=int(time.time()))
-@app.route('/blog_tijdbesparen')
+@app.route('/blog/tijdbesparen-met-automatisering')
 def blog_tijdbesparen():
     return render_template("blog_tijdbesparen.html", time=int(time.time()))
 
