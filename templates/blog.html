@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+
+  <title>PyFlow Blog - Automatisering & Slimme Tools</title>
+  <link rel="canonical" href="https://www.pyflow.nl/blog">
+
+  <!-- SEO Meta -->
+  <meta name="description" content="Lees de nieuwste blogs van PyFlow over automatisering, procesoptimalisatie, en slimme software-oplossingen voor bedrijven.">
+  <meta name="keywords" content="blog, automatisering, software, tijd besparen, slimme tools, pyflow, zakelijk, digitalisering">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+  <link rel="icon" type="image/png" href="/static/favicon.png?v=2">
+  <link rel="shortcut icon" href="/static/favicon.png?v=2">
+  <link rel="apple-touch-icon" href="/static/logo.png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="PyFlow Blog - Automatisering & Tools">
+  <meta property="og:description" content="Ontdek praktische inzichten en tips over automatisering, tools en efficiëntie.">
+  <meta property="og:image" content="https://www.pyflow.nl/static/logo.png">
+  <meta property="og:url" content="https://www.pyflow.nl/blog">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PyFlow Blog - Automatisering & Tools">
+  <meta name="twitter:description" content="Lees slimme tips over bedrijfsautomatisering, besparing en softwareoplossingen.">
+  <meta name="twitter:image" content="https://www.pyflow.nl/static/logo.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "PyFlow Blog",
+    "url": "https://www.pyflow.nl/blog",
+    "description": "Inspirerende artikelen over automatisering, procesoptimalisatie en digitale oplossingen voor bedrijven.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "PyFlow",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.pyflow.nl/static/logo.png"
+      }
+    }
+  }
+  </script>
+
+  <!-- Analytics -->
+  <script defer src="https://vercel.analytics.dev/script.js"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles5.css') }}?v={{ time }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Dark Mode Toggle -->
+  <div id="dark-mode-toggle" onclick="toggleDarkMode()">
+    <div class="toggle-track">
+      <div class="toggle-thumb"></div>
+    </div>
+  </div>
+
+  <canvas id="backgroundCanvas"></canvas>
+
+  <div id="menu">
+    <div id="menu-icon" onclick="toggleMenu()">☰</div>
+    <nav id="menu-content">
+      <div id="menu-close" onclick="toggleMenu()"><span>&times;</span></div>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/automatiseren">Waarom Automatiseren?</a></li>
+        <li><a href="/besparings-calculator">Besparings Calculator</a></li>
+        <li><a href="/overons">Over ons</a></li>
+        <li><a href="/prijsindicatie">Prijsindicatie</a></li>
+        <li><a href="https://demo.pyflow.nl/">Demo Showcase</a></li>
+        <li><a href="/contact">Contact opnemen</a></li>
+        <li><a href="/blog">Blog</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Hero sectie -->
+  <div id="hero">
+    <div id="logo-container">
+      <img id="logo" src="/static/logo.png" alt="PyFlow Logo">
+      <div id="logo-overlay"></div>
+    </div>
+    <h1 id="glitch-text" style="display: none;">PyFlow</h1>
+    <p id="subtitle">Blog over Automatisering, Tools en Slimme Software</p>
+  </div>
+
+  <!-- Blog Content -->
+  <section id="blog-content" class="blog-section">
+    <div class="container">
+      <h2 class="section-title">Laatste artikelen</h2>
+      <p style="text-align:center; font-style:italic; margin-bottom:2rem;">Binnenkort verschijnen hier onze nieuwste inzichten en tips over automatisering.</p>
+
+      <!-- Placeholder blogcard -->
+      <div class="blog-card">
+        <h3 class="blog-title">🚧 Geen blogposts beschikbaar</h3>
+        <p class="blog-snippet">We werken achter de schermen aan waardevolle content. Kom binnenkort terug voor tips, inspiratie en praktijkvoorbeelden!</p>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer">
+    &copy; PyFlow 2025
+  </footer>
+
+  <!-- Scripts -->
+  <script src="{{ url_for('static', filename='js/script5.js') }}"></script>
+</body>
+</html>
