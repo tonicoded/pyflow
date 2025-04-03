@@ -132,42 +132,12 @@
               </section>
         </div>
         </div>
+
+
   <footer id="footer">
     &copy; PyFlow 2025
   </footer>
-  <script>
-    const postId = "tijdbesparen-met-automatisering";
-    
-    // Statistieken ophalen bij laden
-    fetch(`/api/blog/stats/${postId}`)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('view-count').innerText = data.views;
-        document.getElementById('like-count').innerText = data.likes;
-        document.getElementById('dislike-count').innerText = data.dislikes;
-      });
-    
-    // View tellen
-    fetch(`/api/blog/view/${postId}`, { method: "POST" });
-    
-    // Like
-    function likePost() {
-      fetch(`/api/blog/like/${postId}`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('like-count').innerText = data.likes;
-        });
-    }
-    
-    // Dislike
-    function dislikePost() {
-      fetch(`/api/blog/dislike/${postId}`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('dislike-count').innerText = data.dislikes;
-        });
-    }
-    </script>
+
     
   
   <!-- Scripts -->
