@@ -110,25 +110,47 @@
                 </a>
             </div>
 
-  <!-- Blog Content -->
-  <section id="blog-content" class="blog-section">
-    <div class="container">
-  <!-- Blogpost card -->
-<article class="blog-card">
-    <h3 class="blog-title">🕒 Hoe Automatisering je Bedrijf Elke Maand Uren Tijd Bespaart</h3>
-    <p class="blog-snippet">
-      Ontdek hoe slimme automatiseringstools dagelijkse taken versnellen en je team meer ruimte geven voor wat écht telt. Minder handwerk, meer groei. 🎯
-    </p>
-    <a href="/blog/tijdbesparen-met-automatisering" class="read-more">Lees verder →</a>
-  </article>
-  
-    </div>
-  </section>
+            <section id="blog-content" class="blog-section">
+                <div class="container" style="max-width: 850px; margin: 0 auto; padding: 2rem;">
+                  <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">📝 Laatste artikelen</h2>
+              
+                  <article class="blog-card" style="background-color: #1c1c1c; padding: 2rem; border-radius: 16px; box-shadow: 0 0 10px rgba(0,0,0,0.4); margin-bottom: 2rem;">
+                    <h3 class="blog-title" style="font-size: 1.4rem; color: #90caf9;">🕒 Hoe Automatisering je Bedrijf Elke Maand Uren Tijd Bespaart</h3>
+                    <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.2rem;">Gepubliceerd op: <strong>3 april 2025</strong> • 👁️ <span id="view-count">284</span> keer gelezen</p>
+                    <p class="blog-snippet" style="margin: 1rem 0; color: #ddd;">
+                      Ontdek hoe slimme automatiseringstools dagelijkse taken versnellen en je team meer ruimte geven voor wat écht telt. Minder handwerk, meer groei. 🎯
+                    </p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <a href="/blog/tijdbesparen-met-automatisering" class="read-more" style="color: #81c784; text-decoration: none; font-weight: bold;">Lees verder →</a>
+                      <div class="engagement-buttons" style="display: flex; gap: 1rem; font-size: 1.2rem; align-items: center;">
+                        <span class="like-btn" onclick="likePost()" style="cursor: pointer;" title="Vind ik leuk">👍 <span id="like-count">12</span></span>
+                        <span class="dislike-btn" onclick="dislikePost()" style="cursor: pointer;" title="Vind ik niet leuk">👎 <span id="dislike-count">1</span></span>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </section>
+              
 
   <footer id="footer">
     &copy; PyFlow 2025
   </footer>
-
+  <script>
+    // Dummy counters (vervang met fetch naar backend JSON als je wilt)
+    let likes = 12;
+    let dislikes = 1;
+  
+    function likePost() {
+      likes++;
+      document.getElementById('like-count').innerText = likes;
+    }
+  
+    function dislikePost() {
+      dislikes++;
+      document.getElementById('dislike-count').innerText = dislikes;
+    }
+  </script>
+  
   <!-- Scripts -->
   <script src="{{ url_for('static', filename='js/script5.js') }}"></script>
 </body>
