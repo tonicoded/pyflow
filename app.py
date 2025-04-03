@@ -5,7 +5,8 @@ import random
 from flask import send_from_directory
 import time
 from flask import request, redirect
-
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -15,9 +16,10 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'anthonyvvza@gmail.com'  # 🔹 Vervang dit met jouw Gmail-adres
-app.config['MAIL_PASSWORD'] = 'kimi ocos sajs lxyc'  # 🔹 Gebruik een app-wachtwoord, niet je gewone wachtwoord!
-app.config['MAIL_DEFAULT_SENDER'] = 'anthonyvvza@gmail.com'  # 🔹 Zelfde als MAIL_USERNAME
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
+
 
 mail = Mail(app)
 
