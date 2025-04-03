@@ -136,20 +136,39 @@
     &copy; PyFlow 2025
   </footer>
   <script>
-    // Dummy counters (vervang met fetch naar backend JSON als je wilt)
-    let likes = 12;
-    let dislikes = 1;
-  
+    const postId = "tijdbesparen-met-automatisering";
+    
+    // Statistieken ophalen bij laden
+    fetch(`/api/blog/stats/${postId}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('view-count').innerText = data.views;
+        document.getElementById('like-count').innerText = data.likes;
+        document.getElementById('dislike-count').innerText = data.dislikes;
+      });
+    
+    // View tellen
+    fetch(`/api/blog/view/${postId}`, { method: "POST" });
+    
+    // Like
     function likePost() {
-      likes++;
-      document.getElementById('like-count').innerText = likes;
+      fetch(`/api/blog/like/${postId}`, { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('like-count').innerText = data.likes;
+        });
     }
-  
+    
+    // Dislike
     function dislikePost() {
-      dislikes++;
-      document.getElementById('dislike-count').innerText = dislikes;
+      fetch(`/api/blog/dislike/${postId}`, { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('dislike-count').innerText = data.dislikes;
+        });
     }
-  </script>
+    </script>
+    
   
   <!-- Scripts -->
   <script src="{{ url_for('static', filename='js/script5.js') }}"></script>

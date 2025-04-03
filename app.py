@@ -4,6 +4,7 @@ import os
 import random
 from flask import send_from_directory
 import time
+import json
 from flask import request, redirect
 from dotenv import load_dotenv
 load_dotenv()
@@ -21,6 +22,7 @@ app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
 
 
+STATS_FILE = "blog_stats.json"
 mail = Mail(app)
 
 @app.route('/')
@@ -197,6 +199,48 @@ def calculate_savings():
         "cost_saved": round(cost_saved, 2),
         "roi_months": roi
     })
+
+
+if not os.path.exists(STATS_FILE):
+    with open(STATS_FILE, "w") as f:
+        json.dump({}, f)
+
+def load_stats():
+    with open(STATS_FILE, "r") as f:
+        return json.load(f)
+
+def save_stats(data):
+    with open(STATS_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+
+@app.route("/api/blog/view/<post_id>", methods=["POST"])
+def increase_view(post_id):
+    stats = load_stats()
+    stats.setdefault(post_id, {"views": 0, "likes": 0, "dislikes": 0})
+    stats[post_id]["views"] += 1
+    save_stats(stats)
+    return jsonify(stats[post_id])
+
+@app.route("/api/blog/like/<post_id>", methods=["POST"])
+def increase_like(post_id):
+    stats = load_stats()
+    stats.setdefault(post_id, {"views": 0, "likes": 0, "dislikes": 0})
+    stats[post_id]["likes"] += 1
+    save_stats(stats)
+    return jsonify(stats[post_id])
+
+@app.route("/api/blog/dislike/<post_id>", methods=["POST"])
+def increase_dislike(post_id):
+    stats = load_stats()
+    stats.setdefault(post_id, {"views": 0, "likes": 0, "dislikes": 0})
+    stats[post_id]["dislikes"] += 1
+    save_stats(stats)
+    return jsonify(stats[post_id])
+
+@app.route("/api/blog/stats/<post_id>")
+def get_stats(post_id):
+    stats = load_stats()
+    return jsonify(stats.get(post_id, {"views": 0, "likes": 0, "dislikes": 0}))
 
 if __name__ == "__main__":
     app.run(debug=False)
