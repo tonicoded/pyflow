@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-
   <title>PyFlow Blog - Automatisering & Slimme Tools</title>
   <link rel="canonical" href="https://www.pyflow.nl/blog">
 
@@ -12,19 +11,17 @@
   <meta name="keywords" content="blog, automatisering, software, tijd besparen, slimme tools, pyflow, zakelijk, digitalisering">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
   <link rel="icon" type="image/png" href="/static/favicon.png?v=2">
   <link rel="shortcut icon" href="/static/favicon.png?v=2">
   <link rel="apple-touch-icon" href="/static/logo.png">
 
-  <!-- Open Graph -->
+  <!-- Open Graph & Twitter -->
   <meta property="og:title" content="PyFlow Blog - Automatisering & Tools">
   <meta property="og:description" content="Ontdek praktische inzichten en tips over automatisering, tools en efficiëntie.">
   <meta property="og:image" content="https://www.pyflow.nl/static/logo.png">
   <meta property="og:url" content="https://www.pyflow.nl/blog">
   <meta property="og:type" content="website">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="PyFlow Blog - Automatisering & Tools">
   <meta name="twitter:description" content="Lees slimme tips over bedrijfsautomatisering, besparing en softwareoplossingen.">
@@ -58,89 +55,76 @@
 </head>
 
 <body>
-    <!-- Dark Mode Toggle Switch -->
+
+<!-- Dark Mode Toggle -->
 <div id="dark-mode-toggle" onclick="toggleDarkMode()">
-    <div class="toggle-track">
-        <div class="toggle-thumb"></div>
-    </div>
+  <div class="toggle-track"><div class="toggle-thumb"></div></div>
 </div>
 
-    <canvas id="backgroundCanvas"></canvas>
-    
-    <div id="menu">
-        <div id="menu-icon" onclick="toggleMenu()">☰</div>
-        <nav id="menu-content">
-            <div id="menu-close" onclick="toggleMenu()">
-                <span>&times;</span>
-            </div>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/automatiseren">Waarom Automatiseren?</a></li>
-                <li><a href="/besparings-calculator">Besparings Calculator</a></li>
-                <li><a href="/overons">Over ons</a></li>
-                <li><a href="/prijsindicatie">Prijsindicatie</a></li>
-                <li><a href="https://demo.pyflow.nl/">Demo Showcase</a></li>
-                <li><a href="/contact">Contact opnemen</a></li>
-            </ul>
-        </nav>
-    </div>
-    
-    
-    <div id="content">
-        <div id="hero">
-            <div id="logo-container">
-                <img id="logo" src="/static/logo.png" alt="PyFlow Logo">
-                <div id="logo-overlay"></div>
-            </div>
-            <h1 id="glitch-text" style="display: none;">PyFlow</h1>
-            <p id="subtitle"></p>
-            <!-- 🌟 Socials Sectie -->
-            <div id="socials">
-                <a href="https://x.com/PyFlowNL" target="_blank" class="social-icon" aria-label="X">
-                    <i class="fab fa-x-twitter"></i>
-                </a>
-                <a href="https://nl.linkedin.com/in/anthony-verruijt-a34073314" target="_blank" class="social-icon" aria-label="LinkedIn">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-                <a href="mailto:anthony@pyflow.nl" class="social-icon" aria-label="E-mail">
-                    <i class="fas fa-envelope"></i>
-                </a>
-                <a href="tel:0640470662" class="social-icon" aria-label="Bel ons">
-                    <i class="fas fa-phone"></i>
-                </a>
-            </div>
+<canvas id="backgroundCanvas"></canvas>
 
-            <section id="blog-content" class="blog-section">
-                <div class="container" style="max-width: 850px; margin: 0 auto; padding: 2rem;">
-                  <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">📝 Laatste artikelen</h2>
-              
-                  <article class="blog-card" style="background-color: #1c1c1c; padding: 2rem; border-radius: 16px; box-shadow: 0 0 10px rgba(0,0,0,0.4); margin-bottom: 2rem;">
-                    <h3 class="blog-title" style="font-size: 1.4rem; color: #90caf9;">🕒 Hoe Automatisering je Bedrijf Elke Maand Uren Tijd Bespaart</h3>
-                    <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.2rem;">Gepubliceerd op: <strong>3 april 2025</strong> • 👁️ <span id="view-count">284</span> keer gelezen</p>
-                    <p class="blog-snippet" style="margin: 1rem 0; color: #ddd;">
-                      Ontdek hoe slimme automatiseringstools dagelijkse taken versnellen en je team meer ruimte geven voor wat écht telt. Minder handwerk, meer groei. 🎯
-                    </p>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                      <a href="/blog/tijdbesparen-met-automatisering" class="read-more" style="color: #81c784; text-decoration: none; font-weight: bold;">Lees verder →</a>
-                      <div class="engagement-buttons" style="display: flex; gap: 1rem; font-size: 1.2rem; align-items: center;">
-                        <span class="like-btn" onclick="likePost()" style="cursor: pointer;" title="Vind ik leuk">👍 <span id="like-count">12</span></span>
-                        <span class="dislike-btn" onclick="dislikePost()" style="cursor: pointer;" title="Vind ik niet leuk">👎 <span id="dislike-count">1</span></span>
-                      </div>
-                    </div>
-                  </article>
-                </div>
-              </section>
-        </div>
-        </div>
+<!-- Navigatie -->
+<div id="menu">
+  <div id="menu-icon" onclick="toggleMenu()">☰</div>
+  <nav id="menu-content">
+    <div id="menu-close" onclick="toggleMenu()"><span>&times;</span></div>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/automatiseren">Waarom Automatiseren?</a></li>
+      <li><a href="/besparings-calculator">Besparings Calculator</a></li>
+      <li><a href="/overons">Over ons</a></li>
+      <li><a href="/prijsindicatie">Prijsindicatie</a></li>
+      <li><a href="https://demo.pyflow.nl/">Demo Showcase</a></li>
+      <li><a href="/contact">Contact opnemen</a></li>
+    </ul>
+  </nav>
+</div>
 
+<!-- Hero -->
+<div id="hero">
+  <div id="logo-container">
+    <img id="logo" src="/static/logo.png" alt="PyFlow Logo">
+    <div id="logo-overlay"></div>
+  </div>
+  <h1 id="glitch-text" style="display: none;">PyFlow</h1>
+  <p id="subtitle">Efficiënte automatiseringsoplossingen voor bedrijven</p>
 
-  <footer id="footer">
-    &copy; PyFlow 2025
-  </footer>
+  <!-- Socials -->
+  <div id="socials">
+    <a href="https://x.com/PyFlowNL" target="_blank" class="social-icon" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+    <a href="https://nl.linkedin.com/in/anthony-verruijt-a34073314" target="_blank" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    <a href="mailto:anthony@pyflow.nl" class="social-icon" aria-label="E-mail"><i class="fas fa-envelope"></i></a>
+    <a href="tel:0640470662" class="social-icon" aria-label="Bel ons"><i class="fas fa-phone"></i></a>
+  </div>
+</div>
 
-    
-  
-  <!-- Scripts -->
-  <script src="{{ url_for('static', filename='js/script5.js') }}"></script>
+<!-- Blog Overzicht -->
+<section id="blog-content" class="blog-section">
+  <div class="container" style="max-width: 850px; margin: 0 auto; padding: 2rem;">
+    <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">📝 Laatste artikelen</h2>
+
+    <!-- Blogpost -->
+    <article class="blog-card" style="background-color: #1c1c1c; padding: 2rem; border-radius: 16px; box-shadow: 0 0 10px rgba(0,0,0,0.4); margin-bottom: 2rem;">
+      <h3 class="blog-title" style="font-size: 1.4rem; color: #90caf9;">🕒 Hoe Automatisering je Bedrijf Elke Maand Uren Tijd Bespaart</h3>
+      <p style="color: #ccc; font-size: 0.9rem; margin-top: 0.2rem;">Gepubliceerd op: <strong>3 april 2025</strong></p>
+      <p style="margin: 1rem 0; color: #ddd;">
+        Ontdek hoe slimme automatiseringstools dagelijkse taken versnellen en je team meer ruimte geven voor wat écht telt. Minder handwerk, meer groei.
+      </p>
+      <a href="/blog/tijdbesparen-met-automatisering" class="read-more" style="color: #81c784; text-decoration: none; font-weight: bold;">Lees verder →</a>
+    </article>
+
+    <!-- Toekomstige posts... -->
+    <!-- <article class="blog-card">...</article> -->
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="footer">
+  &copy; PyFlow 2025
+</footer>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='js/script5.js') }}"></script>
 </body>
 </html>
