@@ -85,6 +85,10 @@ def automatiseren():
 def overons():
     return render_template("overons.html", time=int(time.time()))
 
+@app.route('/blog')
+def blog():
+    return render_template("blog.html", time=int(time.time()))
+
 @app.route('/prijsindicatie')
 def prijsindicatie():
     return render_template("prijsindicatie.html", time=int(time.time()))
