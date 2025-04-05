@@ -215,9 +215,11 @@ def cloudflare_stats():
 
     try:
         r = requests.get(url, headers=headers)
+        print("🌐 Statuscode:", r.status_code)
+        print("🔁 Response body:", r.text)  # ← LAAT ZIEN WAT ER FOUT GAAT
         r.raise_for_status()
-        raw = r.json()["result"]
 
+        raw = r.json()["result"]
         data = {
             "timeseries": raw["timeseries"][-24:],  # laatste 24 uur
             "countries": sorted(raw["top_countries"], key=lambda x: x["requests"], reverse=True)[:8],
@@ -226,8 +228,9 @@ def cloudflare_stats():
         return jsonify(data)
 
     except Exception as e:
-        print("Cloudflare API error:", e)
+        print("❌ Cloudflare API error:", e)
         return jsonify({"error": "Cloudflare API fout"}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=False)
