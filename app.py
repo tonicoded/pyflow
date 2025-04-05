@@ -4,7 +4,6 @@ import os
 import random
 from flask import send_from_directory
 import time
-import requests
 from flask import request, redirect
 from dotenv import load_dotenv
 load_dotenv()
@@ -23,10 +22,6 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
 
 
 mail = Mail(app)
-
-# 🔐 Jouw vaste API-token en Zone ID
-CLOUDFLARE_API_TOKEN = "AJYZ3j1cwsbVbrstRo9fEIcOXHmgnkhJvkgGjKIY"
-CLOUDFLARE_ZONE_ID = "e2c7ce1421b1060329c7944b7dabdede"  # ← jouw echte zone ID
 
 @app.route('/')
 def index():
@@ -85,9 +80,6 @@ def favicon():
 @app.route('/automatiseren')
 def automatiseren():
     return render_template("automatiseren.html", time=int(time.time()))
-@app.route("/stats")
-def stats():
-    return render_template("stats.html", time=int(time.time()))
 
 @app.route('/overons')
 def overons():
@@ -203,55 +195,6 @@ def calculate_savings():
         "cost_saved": round(cost_saved, 2),
         "roi_months": roi
     })
-
-@app.route("/api/cloudflare/stats")
-def cloudflare_stats():
-    headers = {
-        "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
-        "Content-Type": "application/json"
-    }
-
-    url = f"https://api.cloudflare.com/client/v4/zones/{CLOUDFLARE_ZONE_ID}/analytics/dashboard?since=-604800&continuous=true"
-
-    try:
-        r = requests.get(url, headers=headers)
-        print("🌐 Statuscode:", r.status_code)
-        print("🔁 Headers:", r.headers)
-        print("🔁 Body:", r.text)  # 👈 Dit is de key
-        r.raise_for_status()
-
-        raw = r.json()["result"]
-        data = {
-            "timeseries": raw["timeseries"][-24:],
-            "countries": sorted(raw["top_countries"], key=lambda x: x["requests"], reverse=True)[:8],
-            "cache_ratio": round(raw["caching"]["percent_cached"], 1)
-        }
-        return jsonify(data)
-
-    except Exception as e:
-        print("❌ Cloudflare API error:", e)
-        return jsonify({
-            "error": "Cloudflare API fout",
-            "details": str(e)
-        }), 500
-
-@app.route('/api/cloudflare/zones')
-def get_cloudflare_zones():
-    headers = {
-        "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
-        "Content-Type": "application/json"
-    }
-
-    url = "https://api.cloudflare.com/client/v4/zones"
-
-    try:
-        r = requests.get(url, headers=headers)
-        r.raise_for_status()
-        return jsonify(r.json())  # toont zone ID's + domeinnamen
-    except Exception as e:
-        print("❌ Cloudflare zone list error:", e)
-        return jsonify({"error": "Kan zones niet ophalen", "details": str(e)}), 500
-
 
 if __name__ == "__main__":
     app.run(debug=False)
