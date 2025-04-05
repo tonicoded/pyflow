@@ -92,6 +92,11 @@ def blog():
 def blog_tijdbesparen():
     return render_template("blog_tijdbesparen.html", time=int(time.time()))
 
+@app.route('/blog/automatiseren-voor-kappers')
+def automatisering_kapper():
+    return render_template("automatisering_kapper.html", time=int(time.time()))
+
+
 @app.route('/prijsindicatie')
 def prijsindicatie():
     return render_template("prijsindicatie.html", time=int(time.time()))
