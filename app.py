@@ -235,6 +235,22 @@ def cloudflare_stats():
             "details": str(e)
         }), 500
 
+@app.route('/api/cloudflare/zones')
+def get_cloudflare_zones():
+    headers = {
+        "Authorization": f"Bearer {CLOUDFLARE_API_TOKEN}",
+        "Content-Type": "application/json"
+    }
+
+    url = "https://api.cloudflare.com/client/v4/zones"
+
+    try:
+        r = requests.get(url, headers=headers)
+        r.raise_for_status()
+        return jsonify(r.json())  # toont zone ID's + domeinnamen
+    except Exception as e:
+        print("❌ Cloudflare zone list error:", e)
+        return jsonify({"error": "Kan zones niet ophalen", "details": str(e)}), 500
 
 
 if __name__ == "__main__":
