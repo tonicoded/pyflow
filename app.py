@@ -70,6 +70,8 @@ def sitemap():
         <url><loc>https://www.pyflow.nl/prijsindicatie</loc><priority>0.7</priority></url>
         <url><loc>https://www.pyflow.nl/live-automation</loc><priority>0.6</priority></url>
         <url><loc>https://www.pyflow.nl/dashboard-data</loc><priority>0.6</priority></url>
+        <url><loc>https://www.pyflow.nl/blog/tijdbesparen-met-automatisering</loc><priority>0.6</priority></url>
+        <url><loc>https://www.pyflow.nl/blog/automatiseren-voor-kappers</loc><priority>0.7</priority></url>
     </urlset>
     """
     return Response(sitemap_xml, mimetype="application/xml")
