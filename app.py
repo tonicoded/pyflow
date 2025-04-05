@@ -91,9 +91,6 @@ def blog():
 @app.route('/blog/tijdbesparen-met-automatisering')
 def blog_tijdbesparen():
     return render_template("blog_tijdbesparen.html", time=int(time.time()))
-@app.route('/automatiseringcheck')
-def automatiseringcheck():
-    return render_template('automatiseringcheck.html', time=int(time.time()))
 
 @app.route('/prijsindicatie')
 def prijsindicatie():
