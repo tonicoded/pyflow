@@ -273,13 +273,13 @@ def website_scan():
         issues = []
         positives = []
 
-        # Contact
+        # CONTACT
         if soup.find("form"):
             positives.append("Formulier aanwezig – contactmogelijkheid gedetecteerd.")
         else:
             issues.append("Geen formulieren gevonden – mogelijk geen contactmogelijkheid.")
 
-        if soup.find(string=lambda t: "contact" in t.lower() or "afspraak" in t.lower()):
+        if soup.find(string=lambda t: t and ("contact" in t.lower() or "afspraak" in t.lower())):
             positives.append("Contact/afspraak-link aanwezig.")
         else:
             issues.append("Geen duidelijke 'contact' of 'afspraak'-link.")
@@ -294,7 +294,7 @@ def website_scan():
         else:
             issues.append("Geen telefoonnummer zichtbaar.")
 
-        # Automatisering
+        # AUTOMATISERING
         if "automatisering" in html:
             positives.append("Focus op automatisering gevonden.")
         else:
@@ -305,37 +305,39 @@ def website_scan():
         else:
             issues.append("Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
 
-        # Juridisch
+        # JURIDISCH
         if re.search(r"cookie|privacy|avg|gdpr", html):
             positives.append("Cookie- of privacybeleid aanwezig.")
         else:
             issues.append("Geen cookie- of privacybeleid gevonden – juridisch risico.")
 
-        # Chatbots
+        # CHATBOT
         if any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
             positives.append("Chatbot gedetecteerd.")
         else:
             issues.append("Geen chatbot gedetecteerd – overweeg live chat voor klantenservice.")
 
-        # Analytics
+        # TRACKING
         if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
             positives.append("Analytics/tracking gevonden.")
         else:
             issues.append("Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
 
-        # Viewport
+        # VIEWPORT
         if soup.find("meta", attrs={"name": "viewport"}):
             positives.append("Viewport-tag aanwezig – goed voor mobiel.")
         else:
             issues.append("Geen viewport-tag – kan slecht werken op mobiel.")
 
         # SEO
-        if soup.find("title"):
+        title = soup.find("title")
+        if title and title.text.strip():
             positives.append("Bevat <title> tag – essentieel voor SEO.")
         else:
             issues.append("Geen <title> tag gevonden.")
 
-        if soup.find("meta", attrs={"name": "description"}):
+        description = soup.find("meta", attrs={"name": "description"})
+        if description and description.get("content"):
             positives.append("Meta-description aanwezig.")
         else:
             issues.append("Geen meta-description – belangrijk voor Google.")
@@ -345,7 +347,8 @@ def website_scan():
         else:
             issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
 
-        h1_count = len(soup.find_all("h1"))
+        h1_tags = soup.find_all("h1")
+        h1_count = len(h1_tags)
         if h1_count == 1:
             positives.append("Bevat één <h1> tag – goed voor SEO.")
         elif h1_count == 0:
@@ -353,19 +356,19 @@ def website_scan():
         else:
             issues.append("Meerdere <h1> tags gevonden – kan verwarrend zijn voor zoekmachines.")
 
-        # Schema
+        # STRUCTURED DATA
         if "schema.org" in html:
             positives.append("Gestructureerde data (Schema.org) gevonden.")
         else:
             issues.append("Geen gestructureerde data (Schema.org) gevonden.")
 
-        # Laadtijd
+        # LAADTIJD
         if load_time <= 3:
             positives.append(f"Goede laadtijd ({round(load_time, 2)} sec).")
         else:
             issues.append(f"Laadtijd is traag ({round(load_time, 2)} sec) – optimalisatie aanbevolen.")
 
-        # Cache & CDN
+        # CACHE & CDN
         if "cache-control" in response.headers:
             positives.append("Cache-Control header aanwezig.")
         else:
@@ -376,7 +379,7 @@ def website_scan():
         else:
             issues.append("Geen CDN gedetecteerd (zoals Cloudflare) – mogelijk te verbeteren.")
 
-        # Interne links test
+        # LINK CHECK
         links = soup.find_all("a", href=True)
         broken = 0
         for link in links[:10]:
@@ -395,7 +398,7 @@ def website_scan():
         else:
             positives.append("Alle geteste interne links werken goed.")
 
-        # Formulier test
+        # CAPTCHA CHECK
         forms = soup.find_all("form")
         if forms:
             try:
@@ -406,12 +409,14 @@ def website_scan():
                     positives.append("Formulier bevat CAPTCHA – goed tegen spam.")
                 else:
                     positives.append("Formulier getest – geen CAPTCHA gedetecteerd.")
-            except Exception:
+            except:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
-        # Score
-        base_score = 100
-        score = max(30, base_score - len(issues) * 5)
+        # ✅ Cleanup: filter lege of generieke strings
+        positives = [p for p in positives if p.strip() and len(p.strip()) > 5 and not p.strip().lower() == "bevat"]
+
+        # ✅ Score berekening
+        score = max(30, 100 - len(issues) * 5)
 
         return jsonify({
             "issues": issues,
