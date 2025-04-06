@@ -413,7 +413,7 @@ def website_scan():
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
         # ✅ Cleanup: filter lege of generieke strings
-        positives = [p for p in positives if p.strip() and len(p.strip()) > 5 and not p.strip().lower() == "bevat"]
+        positives = [p for p in positives if p.strip().lower() != "bevat"]
 
         # ✅ Score berekening
         score = max(30, 100 - len(issues) * 5)
