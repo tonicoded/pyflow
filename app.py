@@ -7,6 +7,9 @@ import time
 from flask import request, redirect
 from dotenv import load_dotenv
 from datetime import datetime
+from urllib.parse import urlparse
+import requests
+from bs4 import BeautifulSoup
 load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -238,6 +241,43 @@ def calculate_savings():
         "cost_saved": round(cost_saved, 2),
         "roi_months": roi
     })
+
+@app.route("/website-scan", methods=["POST"])
+def website_scan():
+    url = request.json.get("url")
+    if not url:
+        return jsonify({"issues": ["Geen URL opgegeven."]})
+
+    try:
+        # Simpele GET
+        response = requests.get(url, timeout=5)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        issues = []
+
+        # 🔍 Controlepunten
+        if not soup.find("form"):
+            issues.append("Geen formulieren gevonden – mis je een contactmogelijkheid?")
+        if not soup.find(string=lambda t: "afspraak" in t.lower() or "contact" in t.lower()):
+            issues.append("Geen zichtbare 'contact' of 'afspraak'-mogelijkheid op homepage.")
+        if "mailto:" not in response.text:
+            issues.append("Geen e-mailadres gevonden op de pagina.")
+        if "tel:" not in response.text:
+            issues.append("Geen telefoonnummer gevonden op de pagina.")
+        if "automatisering" not in response.text.lower():
+            issues.append("Geen duidelijke vermelding van processen of automatisering.")
+        if len(soup.find_all("script")) < 2:
+            issues.append("Weinig scripts – mogelijk gebrek aan interactieve elementen.")
+        if "cookie" not in response.text.lower():
+            issues.append("Geen cookie- of privacybeleid gedetecteerd – mogelijk juridisch risico.")
+        
+        if not issues:
+            issues = ["Top! Deze site lijkt goed ingericht, maar je kunt altijd méér automatiseren."]
+
+        return jsonify({"issues": issues})
+
+    except Exception as e:
+        return jsonify({"issues": [f"Fout bij het analyseren van de site: {str(e)}"]})
 
 if __name__ == "__main__":
     app.run(debug=False)
