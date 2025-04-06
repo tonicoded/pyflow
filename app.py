@@ -273,7 +273,7 @@ def website_scan():
         issues = []
         positives = []
 
-        # CONTACT
+        # Contact
         if soup.find("form"):
             positives.append("Formulier aanwezig – contactmogelijkheid gedetecteerd.")
         else:
@@ -294,7 +294,7 @@ def website_scan():
         else:
             issues.append("Geen telefoonnummer zichtbaar.")
 
-        # AUTOMATISERING
+        # Automatisering
         if "automatisering" in html:
             positives.append("Focus op automatisering gevonden.")
         else:
@@ -305,25 +305,25 @@ def website_scan():
         else:
             issues.append("Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
 
-        # JURIDISCH
+        # Juridisch
         if re.search(r"cookie|privacy|avg|gdpr", html):
             positives.append("Cookie- of privacybeleid aanwezig.")
         else:
             issues.append("Geen cookie- of privacybeleid gevonden – juridisch risico.")
 
-        # CHATBOT
+        # Chatbot
         if any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
             positives.append("Chatbot gedetecteerd.")
         else:
             issues.append("Geen chatbot gedetecteerd – overweeg live chat voor klantenservice.")
 
-        # TRACKING
+        # Tracking
         if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
             positives.append("Analytics/tracking gevonden.")
         else:
             issues.append("Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
 
-        # VIEWPORT
+        # Viewport
         if soup.find("meta", attrs={"name": "viewport"}):
             positives.append("Viewport-tag aanwezig – goed voor mobiel.")
         else:
@@ -356,19 +356,19 @@ def website_scan():
         else:
             issues.append("Meerdere <h1> tags gevonden – kan verwarrend zijn voor zoekmachines.")
 
-        # STRUCTURED DATA
+        # Structured data
         if "schema.org" in html:
             positives.append("Gestructureerde data (Schema.org) gevonden.")
         else:
             issues.append("Geen gestructureerde data (Schema.org) gevonden.")
 
-        # LAADTIJD
+        # Laadtijd
         if load_time <= 3:
             positives.append(f"Goede laadtijd ({round(load_time, 2)} sec).")
         else:
             issues.append(f"Laadtijd is traag ({round(load_time, 2)} sec) – optimalisatie aanbevolen.")
 
-        # CACHE & CDN
+        # Cache/CDN
         if "cache-control" in response.headers:
             positives.append("Cache-Control header aanwezig.")
         else:
@@ -379,7 +379,7 @@ def website_scan():
         else:
             issues.append("Geen CDN gedetecteerd (zoals Cloudflare) – mogelijk te verbeteren.")
 
-        # LINK CHECK
+        # Interne links
         links = soup.find_all("a", href=True)
         broken = 0
         for link in links[:10]:
@@ -398,7 +398,7 @@ def website_scan():
         else:
             positives.append("Alle geteste interne links werken goed.")
 
-        # CAPTCHA CHECK
+        # CAPTCHA
         forms = soup.find_all("form")
         if forms:
             try:
@@ -412,17 +412,13 @@ def website_scan():
             except:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
-        # ✅ VERWIJDER FOUTEN ("Bevat", te kort, leeg)
+        # 🧼 FIX: verwijder foute 'Bevat'-regels die onvolledig zijn
         positives = [
             p for p in positives
-            if p.strip()
-            and len(p.strip()) > 5
-            and not p.strip().lower() == "bevat"
-            and not p.strip().lower().startswith("bevat alleen")
-            and not re.fullmatch(r"bevat\b", p.strip().lower())
+            if p.strip().lower() != "bevat" and not re.fullmatch(r"(?i)bevat[ .]*", p.strip())
         ]
 
-        # ✅ Score berekening
+        # Score berekening
         score = max(30, 100 - len(issues) * 5)
 
         return jsonify({
@@ -432,16 +428,11 @@ def website_scan():
         })
 
     except Exception as e:
-        # ✅ Verbeterde opschoning - verwijder generieke of incomplete entries
-        positives = [p for p in positives if not re.fullmatch(r"(?i)bevat\b.*[^a-z].*", p.strip())]
-
-
         return jsonify({
             "issues": [f"❌ Fout tijdens analyse: {str(e)}"],
             "positives": [],
             "score": 0
         })
-
 
 
 if __name__ == "__main__":
