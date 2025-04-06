@@ -78,30 +78,33 @@ def sitemap():
     return Response(sitemap_xml, mimetype="application/xml")
 
 
-# voorbeeld in je Flask route (blog.py)
-blog_posts = [
-    {
-        "title": "Hoe deze Rijschoolhouder 6 Avonden Vrij won met Automatisering",
-        "url": "/blog/automatiseren-voor-rijscholen",
-        "date": "2025-04-06",
-        "img": "/static/rijschool.jpg",
-        "desc": "Jan uit Utrecht had genoeg van losse appjes, Excel en vergeten facturen. Nu regelt een script zijn planning. En hij? Die kijkt eindelijk Netflix."
-    },
-    {
-        "title": "Automatisering voor Kappers: Minder Gedoe, Meer Tijd",
-        "url": "/blog/automatiseren-voor-kappers",
-        "date": "2025-04-05",
-        "img": "/static/kapper.jpg",
-        "desc": "Als kapper heb je al genoeg aan je hoofd. Ontdek hoe salons tijd besparen met online boekingen, automatische herinneringen en meer overzicht."
-    },
-    {
-        "title": "Hoe Automatisering je Bedrijf Elke Maand Uren Tijd Bespaart",
-        "url": "/blog/tijdbesparen-met-automatisering",
-        "date": "2025-04-01",
-        "img": "/static/tijdbesparen.jpg",
-        "desc": "Ontdek hoe slimme tools je helpen repetitieve taken te verminderen en ruimte vrijmaken voor groei. Minder handwerk, meer impact."
-    }
-]
+@app.route('/blog')
+def blog():
+    blog_posts = [
+        {
+            "title": "Hoe deze Rijschoolhouder 6 Avonden Vrij won met Automatisering",
+            "url": "/blog/automatiseren-voor-rijscholen",
+            "date": "2025-04-06",
+            "img": "/static/rijschool.jpg",
+            "desc": "Jan uit Utrecht had genoeg van losse appjes, Excel en vergeten facturen. Nu regelt een script zijn planning. En hij? Die kijkt eindelijk Netflix."
+        },
+        {
+            "title": "Automatisering voor Kappers: Minder Gedoe, Meer Tijd",
+            "url": "/blog/automatiseren-voor-kappers",
+            "date": "2025-04-05",
+            "img": "/static/kapper.jpg",
+            "desc": "Als kapper heb je al genoeg aan je hoofd. Ontdek hoe salons tijd besparen met online boekingen, automatische herinneringen en meer overzicht."
+        },
+        {
+            "title": "Hoe Automatisering je Bedrijf Elke Maand Uren Tijd Bespaart",
+            "url": "/blog/tijdbesparen-met-automatisering",
+            "date": "2025-04-01",
+            "img": "/static/tijdbesparen.jpg",
+            "desc": "Ontdek hoe slimme tools je helpen repetitieve taken te verminderen en ruimte vrijmaken voor groei. Minder handwerk, meer impact."
+        }
+    ]
+    return render_template("blog.html", blog_posts=blog_posts, time=int(time.time()))
+
 
 
 @app.route('/favicon.png')
