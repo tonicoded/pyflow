@@ -389,61 +389,62 @@ body.light-mode .scan-output {
   &copy; PyFlow 2025
 </footer>
 <script>
-    function startScan(e) {
-      e.preventDefault();
-    
-      const url = document.getElementById("scan-url").value.trim();
-      const resultDiv = document.getElementById("scan-result");
-    
-      if (!url) return;
-    
+function startScan(e) {
+  e.preventDefault();
+  const url = document.getElementById("scan-url").value.trim();
+  const resultDiv = document.getElementById("scan-result");
+
+  resultDiv.innerHTML = `
+    <div style="text-align:center; font-size:1.1rem;">
+      <i class='fas fa-circle-notch fa-spin'></i> Bezig met analyseren...
+    </div>`;
+  resultDiv.classList.remove("hidden");
+
+  fetch("/website-scan", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url })
+  })
+    .then(res => res.json())
+    .then(data => {
+      const score = data.score ?? 0;
+      const rawPositives = Array.isArray(data.positives) ? data.positives : [];
+      const positives = rawPositives.filter(p =>
+        p && p.trim().length > 6 && !/^bevat[ .]*$/i.test(p.trim())
+      );
+      const issues = Array.isArray(data.issues) ? data.issues : [];
+
+      const header = `
+        <h3><i class='fas fa-check-circle'></i> Scanresultaat voor ${url}</h3>
+        <p><strong>📊 Website Score:</strong> <span style="color:${scoreColor(score)}; font-size:1.3rem;">${score}/100</span></p>
+      `;
+
+      const goodList = positives.length > 0 ? `
+        <h4 style="color:#81c784; margin-top:1.5rem;"><i class="fas fa-thumbs-up"></i> Goed geregeld</h4>
+        <ul>${positives.map(i => `<li><i class="fas fa-check-circle"></i> ${i}</li>`).join('')}</ul>
+      ` : "<p>Geen positieve punten gevonden.</p>";
+
+      const badList = issues.length > 0 ? `
+        <h4 style="color:#f87171; margin-top:1.5rem;"><i class="fas fa-exclamation-circle"></i> Verbeterpunten</h4>
+        <ul>${issues.map(i => `<li><i class="fas fa-times-circle"></i> ${i}</li>`).join('')}</ul>
+      ` : "<p>🎉 Geen verbeterpunten gevonden!</p>";
+
+      resultDiv.innerHTML = header + goodList + badList;
+    })
+    .catch(() => {
       resultDiv.innerHTML = `
-        <div style="text-align:center; font-size:1.1rem;">
-          <i class='fas fa-circle-notch fa-spin'></i> Bezig met analyseren...
-        </div>`;
-      resultDiv.classList.remove("hidden");
-    
-      fetch("/website-scan", {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const score = data.score ?? 0;
-        const positives = Array.isArray(data.positives) ? data.positives.filter(p => p && p.length > 5 && !/^bevat$/i.test(p.trim())) : [];
-        const issues = Array.isArray(data.issues) ? data.issues : [];
-    
-        const header = `
-          <h3><i class='fas fa-check-circle'></i> Scanresultaat voor ${url}</h3>
-          <p><strong>📊 Website Score:</strong> <span style="color:${scoreColor(score)}; font-size:1.3rem;">${score}/100</span></p>
-        `;
-    
-        const goodList = positives.length > 0 ? `
-          <h4 style="color:#81c784; margin-top:1.5rem;"><i class="fas fa-thumbs-up"></i> Goed geregeld</h4>
-          <ul>${positives.map(i => `<li><i class="fas fa-check-circle"></i> ${i}</li>`).join('')}</ul>
-        ` : "";
-    
-        const badList = issues.length > 0 ? `
-          <h4 style="color:#f87171; margin-top:1.5rem;"><i class="fas fa-exclamation-circle"></i> Verbeterpunten</h4>
-          <ul>${issues.map(i => `<li><i class="fas fa-times-circle"></i> ${i}</li>`).join('')}</ul>
-        ` : "<p>🎉 Geen verbeterpunten gevonden!</p>";
-    
-        resultDiv.innerHTML = header + goodList + badList;
-      })
-      .catch(() => {
-        resultDiv.innerHTML = `
-          <p style="color:red;">
-            <i class='fas fa-exclamation-triangle'></i> Er is iets misgegaan tijdens het scannen.
-          </p>`;
-      });
-    }
-    
-    function scoreColor(score) {
-      if (score >= 90) return "#81c784"; // groen
-      if (score >= 70) return "#fbc02d"; // geel
-      return "#e57373"; // rood
-    }
+        <p style="color:red;">
+          <i class='fas fa-exclamation-triangle'></i> Er is iets misgegaan tijdens het scannen.
+        </p>`;
+    });
+}
+
+function scoreColor(score) {
+  if (score >= 90) return "#81c784";
+  if (score >= 70) return "#fbc02d";
+  return "#e57373";
+}
+
     </script>
     
     
