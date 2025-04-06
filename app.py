@@ -250,11 +250,16 @@ def calculate_savings():
 
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
-
+    import re
+    import time
+    from urllib.parse import urljoin
+    from bs4 import BeautifulSoup
+    import requests
 
     def add_positive(positives, text):
-        if text and len(text.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", text.strip()):
-            positives.append(text.strip())
+        clean = text.strip()
+        if clean and len(clean) > 6 and not re.fullmatch(r"(?i)bevat[ .]*", clean):
+            positives.append(clean)
 
     url = request.json.get("url")
     if not url:
@@ -332,9 +337,9 @@ def website_scan():
         # SEO
         title = soup.find("title")
         if title and title.text.strip():
-            add_positive(positives, "<title> tag gevonden – essentieel voor SEO.")
+            add_positive(positives, "<title> tag aanwezig – essentieel voor SEO.")
         else:
-            issues.append("Geen <title> tag gevonden.")
+            issues.append("Geen <title> tag gevonden – essentieel voor SEO.")
 
         description = soup.find("meta", attrs={"name": "description"})
         if description and description.get("content"):
@@ -350,7 +355,7 @@ def website_scan():
         h1_tags = soup.find_all("h1")
         h1_count = len(h1_tags)
         if h1_count == 1:
-            add_positive(positives, "Bevat één <h1> tag – goed voor SEO.")
+            add_positive(positives, "Eén <h1> tag gevonden – goed voor SEO.")
         elif h1_count == 0:
             issues.append("Geen <h1> tag gevonden – essentieel voor SEO.")
         else:
@@ -398,7 +403,7 @@ def website_scan():
         else:
             add_positive(positives, "Alle geteste interne links werken goed.")
 
-        # FORMULIER
+        # FORMULIER CAPTCHA
         forms = soup.find_all("form")
         if forms:
             try:
@@ -411,9 +416,6 @@ def website_scan():
                     add_positive(positives, "Formulier getest – geen CAPTCHA gedetecteerd.")
             except:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
-
-        # LAATSTE BACKUP CLEANUP (extra voorzichtigheid)
-        positives = [p for p in positives if p and len(p.strip()) > 6 and "bevat" not in p.strip().lower()[:6]]
 
         score = max(30, 100 - len(issues) * 5)
 
@@ -429,6 +431,7 @@ def website_scan():
             "positives": [],
             "score": 0
         })
+
 
 
 if __name__ == "__main__":
