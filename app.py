@@ -10,6 +10,7 @@ from datetime import datetime
 from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
+import re
 load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -245,42 +246,85 @@ def calculate_savings():
         "roi_months": roi
     })
 
+from bs4 import BeautifulSoup
+import requests
+import re
+
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
     url = request.json.get("url")
     if not url:
-        return jsonify({"issues": ["Geen URL opgegeven."]})
+        return jsonify({"issues": ["❌ Geen URL opgegeven."]})
 
     try:
-        # Simpele GET
-        response = requests.get(url, timeout=5)
+        response = requests.get(url, timeout=10)
         soup = BeautifulSoup(response.text, "html.parser")
+        text = soup.get_text(separator=' ').lower()
+        html = response.text.lower()
 
         issues = []
 
-        # 🔍 Controlepunten
+        # 🔍 Diepe analyse:
         if not soup.find("form"):
-            issues.append("Geen formulieren gevonden – mis je een contactmogelijkheid?")
-        if not soup.find(string=lambda t: "afspraak" in t.lower() or "contact" in t.lower()):
-            issues.append("Geen zichtbare 'contact' of 'afspraak'-mogelijkheid op homepage.")
-        if "mailto:" not in response.text:
-            issues.append("Geen e-mailadres gevonden op de pagina.")
-        if "tel:" not in response.text:
-            issues.append("Geen telefoonnummer gevonden op de pagina.")
-        if "automatisering" not in response.text.lower():
-            issues.append("Geen duidelijke vermelding van processen of automatisering.")
-        if len(soup.find_all("script")) < 2:
-            issues.append("Weinig scripts – mogelijk gebrek aan interactieve elementen.")
-        if "cookie" not in response.text.lower():
-            issues.append("Geen cookie- of privacybeleid gedetecteerd – mogelijk juridisch risico.")
-        
-        if not issues:
-            issues = ["Top! Deze site lijkt goed ingericht, maar je kunt altijd méér automatiseren."]
+            issues.append("❌ Geen formulieren gevonden – contactmogelijkheid ontbreekt.")
+        else:
+            issues.append("✅ Formulier gedetecteerd.")
+
+        if not soup.find(string=re.compile(r"afspraak|contact", re.IGNORECASE)):
+            issues.append("❌ Geen zichtbare 'contact' of 'afspraak'-mogelijkheid op de homepage.")
+        else:
+            issues.append("✅ Contact/Afspraak genoemd in tekst.")
+
+        if "mailto:" not in html:
+            issues.append("❌ Geen e-mailadres (mailto:) gevonden.")
+        else:
+            issues.append("✅ E-mailadres gevonden.")
+
+        if "tel:" not in html:
+            issues.append("❌ Geen telefoonnummer (tel:) gevonden.")
+        else:
+            issues.append("✅ Telefoonnummer gevonden.")
+
+        if not any(word in text for word in ["automatisering", "procesoptimalisatie", "workflow", "efficiëntie"]):
+            issues.append("❌ Geen duidelijke vermelding van automatisering of processen.")
+        else:
+            issues.append("✅ Vermelding van automatisering of gerelateerde termen.")
+
+        if "cookie" not in text and "privacy" not in text:
+            issues.append("❌ Geen cookie- of privacybeleid vermeld – mogelijk juridisch risico.")
+        else:
+            issues.append("✅ Cookie- of privacybeleid vermeld.")
+
+        if not any("contact" in link.get("href", "").lower() for link in soup.find_all("a", href=True)):
+            issues.append("❌ Geen link naar contactpagina gevonden.")
+        else:
+            issues.append("✅ Link naar contactpagina aanwezig.")
+
+        if not any(kw in text for kw in ["neem contact op", "plan een demo", "vraag een offerte aan"]):
+            issues.append("❌ Geen duidelijke call-to-action.")
+        else:
+            issues.append("✅ Call-to-action aanwezig.")
+
+        if "wp-content" in html:
+            issues.append("ℹ️ Website draait waarschijnlijk op WordPress.")
+        elif "shopify" in html:
+            issues.append("ℹ️ Website draait waarschijnlijk op Shopify.")
+        elif "wix" in html or "wixsite" in html:
+            issues.append("ℹ️ Website draait waarschijnlijk op Wix.")
+        else:
+            issues.append("ℹ️ CMS onbekend of maatwerk.")
+
+        page_size_kb = len(response.content) / 1024
+        if page_size_kb > 2500:
+            issues.append(f"⚠️ Pagina is vrij groot ({int(page_size_kb)}KB) – kan invloed hebben op laadtijd.")
+        else:
+            issues.append(f"✅ Paginaformaat is normaal ({int(page_size_kb)}KB).")
 
         return jsonify({"issues": issues})
 
     except Exception as e:
-        return jsonify({"issues": [f"Fout bij het analyseren van de site: {str(e)}"]})
+        return jsonify({"issues": [f"❌ Fout bij analyseren: {str(e)}"]})
+
 
 if __name__ == "__main__":
     app.run(debug=False)
