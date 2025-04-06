@@ -258,7 +258,7 @@ def website_scan():
 
     url = request.json.get("url")
     if not url:
-        return jsonify({"issues": ["Geen URL opgegeven."], "score": 0})
+        return jsonify({"issues": ["Geen URL opgegeven."], "score": 0, "positives": []})
     if not url.startswith("http"):
         url = "https://" + url
 
@@ -271,72 +271,118 @@ def website_scan():
         html = response.text.lower()
 
         issues = []
+        positives = []
 
-        # 🔍 Contactmogelijkheden
-        if not soup.find("form"):
+        # Contact
+        if soup.find("form"):
+            positives.append("Formulier aanwezig – contactmogelijkheid gedetecteerd.")
+        else:
             issues.append("Geen formulieren gevonden – mogelijk geen contactmogelijkheid.")
-        if not soup.find(string=lambda t: "contact" in t.lower() or "afspraak" in t.lower()):
+
+        if soup.find(string=lambda t: "contact" in t.lower() or "afspraak" in t.lower()):
+            positives.append("Contact/afspraak-link aanwezig.")
+        else:
             issues.append("Geen duidelijke 'contact' of 'afspraak'-link.")
-        if "mailto:" not in html:
+
+        if "mailto:" in html:
+            positives.append("E-mailadres zichtbaar.")
+        else:
             issues.append("Geen e-mailadres zichtbaar.")
-        if "tel:" not in html:
+
+        if "tel:" in html:
+            positives.append("Telefoonnummer zichtbaar.")
+        else:
             issues.append("Geen telefoonnummer zichtbaar.")
 
-        # 🧠 Automatisering
-        if "automatisering" not in html:
+        # Automatisering
+        if "automatisering" in html:
+            positives.append("Focus op automatisering gevonden.")
+        else:
             issues.append("Geen focus op automatisering – kans om dit beter te vermelden.")
-        if len(soup.find_all("script")) < 2:
+
+        if len(soup.find_all("script")) >= 2:
+            positives.append("Dynamische scripts aanwezig.")
+        else:
             issues.append("Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
 
-        # 👀 Juridisch en vertrouwen
-        if not re.search(r"cookie|privacy|avg|gdpr", html):
+        # Juridisch
+        if re.search(r"cookie|privacy|avg|gdpr", html):
+            positives.append("Cookie- of privacybeleid aanwezig.")
+        else:
             issues.append("Geen cookie- of privacybeleid gevonden – juridisch risico.")
 
-        # 💬 Chatbots
-        if not any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
+        # Chatbots
+        if any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
+            positives.append("Chatbot gedetecteerd.")
+        else:
             issues.append("Geen chatbot gedetecteerd – overweeg live chat voor klantenservice.")
 
-        # 📊 Tracking tools
-        if not any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
+        # Analytics
+        if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
+            positives.append("Analytics/tracking gevonden.")
+        else:
             issues.append("Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
 
-        # 📱 Mobiel & responsive
-        if not soup.find("meta", attrs={"name": "viewport"}):
+        # Viewport
+        if soup.find("meta", attrs={"name": "viewport"}):
+            positives.append("Viewport-tag aanwezig – goed voor mobiel.")
+        else:
             issues.append("Geen viewport-tag – kan slecht werken op mobiel.")
 
-        # 🔍 Technische SEO
-        if not soup.find("title"):
-            issues.append("Geen &lt;title&gt; tag gevonden.")
-        if not soup.find("meta", attrs={"name": "description"}):
-            issues.append("Geen meta-description – belangrijk voor Google.")
-        if not soup.find("img", alt=True):
-            issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
-        if len(soup.find_all("h1")) == 0:
-            issues.append("Geen &lt;h1&gt; tag gevonden – essentieel voor SEO.")
-        elif len(soup.find_all("h1")) > 1:
-            issues.append("Meerdere &lt;h1&gt; tags gevonden – kan verwarrend zijn voor zoekmachines.")
+        # SEO
+        if soup.find("title"):
+            positives.append("Bevat <title> tag – essentieel voor SEO.")
+        else:
+            issues.append("Geen <title> tag gevonden.")
 
-        # 📦 Structured Data
-        if "schema.org" not in html:
+        if soup.find("meta", attrs={"name": "description"}):
+            positives.append("Meta-description aanwezig.")
+        else:
+            issues.append("Geen meta-description – belangrijk voor Google.")
+
+        if soup.find("img", alt=True):
+            positives.append("Afbeeldingen met alt-tekst aanwezig.")
+        else:
+            issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
+
+        h1_count = len(soup.find_all("h1"))
+        if h1_count == 1:
+            positives.append("Bevat één <h1> tag – goed voor SEO.")
+        elif h1_count == 0:
+            issues.append("Geen <h1> tag gevonden – essentieel voor SEO.")
+        else:
+            issues.append("Meerdere <h1> tags gevonden – kan verwarrend zijn voor zoekmachines.")
+
+        # Schema
+        if "schema.org" in html:
+            positives.append("Gestructureerde data (Schema.org) gevonden.")
+        else:
             issues.append("Geen gestructureerde data (Schema.org) gevonden.")
 
-        # ⚡️ Laadtijd
-        if load_time > 3:
+        # Laadtijd
+        if load_time <= 3:
+            positives.append(f"Goede laadtijd ({round(load_time, 2)} sec).")
+        else:
             issues.append(f"Laadtijd is traag ({round(load_time, 2)} sec) – optimalisatie aanbevolen.")
 
-        # 🧱 Caching / CDN
-        if "cache-control" not in response.headers:
+        # Cache & CDN
+        if "cache-control" in response.headers:
+            positives.append("Cache-Control header aanwezig.")
+        else:
             issues.append("Geen 'Cache-Control' header – kan prestaties beïnvloeden.")
-        if "cloudflare" not in response.headers.get("Server", "").lower():
+
+        if "cloudflare" in response.headers.get("Server", "").lower():
+            positives.append("CDN gedetecteerd (Cloudflare).")
+        else:
             issues.append("Geen CDN gedetecteerd (zoals Cloudflare) – mogelijk te verbeteren.")
 
-        # 🔗 Gebroken links check (max 10 interne links)
+        # Interne links test
         links = soup.find_all("a", href=True)
         broken = 0
         for link in links[:10]:
             href = link["href"]
             if href.startswith("http") and url not in href:
-                continue  # Externe links negeren
+                continue
             try:
                 test_url = urljoin(url, href)
                 r = requests.get(test_url, timeout=5)
@@ -346,8 +392,10 @@ def website_scan():
                 broken += 1
         if broken > 0:
             issues.append(f"{broken} interne links lijken niet te werken (404 of foutmelding).")
+        else:
+            positives.append("Alle geteste interne links werken goed.")
 
-        # 🚀 Formulier test
+        # Formulier test
         forms = soup.find_all("form")
         if forms:
             try:
@@ -355,29 +403,29 @@ def website_scan():
                 action_url = urljoin(url, form_action)
                 post_result = requests.post(action_url, data={"test": "pyflow-scan"}, timeout=5)
                 if "captcha" in post_result.text.lower():
-                    issues.append("Formulier bevat CAPTCHA – goed tegen spam.")
+                    positives.append("Formulier bevat CAPTCHA – goed tegen spam.")
                 else:
-                    issues.append("Formulier getest – geen CAPTCHA gedetecteerd.")
+                    positives.append("Formulier getest – geen CAPTCHA gedetecteerd.")
             except Exception:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
-        # 🧮 Scoreberekening
+        # Score
         base_score = 100
         score = max(30, base_score - len(issues) * 5)
 
-        if not issues:
-            issues = ["✅ Alles lijkt in orde – maar er is altijd ruimte voor verbetering."]
-
         return jsonify({
             "issues": issues,
+            "positives": positives,
             "score": score
         })
 
     except Exception as e:
         return jsonify({
             "issues": [f"❌ Fout tijdens analyse: {str(e)}"],
+            "positives": [],
             "score": 0
         })
+
 
 
 

@@ -389,7 +389,6 @@ body.light-mode .scan-output {
 <footer id="footer">
   &copy; PyFlow 2025
 </footer>
-
 <script>
     function startScan(e) {
       e.preventDefault();
@@ -410,25 +409,23 @@ body.light-mode .scan-output {
       .then(res => res.json())
       .then(data => {
         const score = data.score || 0;
+        const positives = data.positives || [];
         const issues = data.issues || [];
-    
-        const good = issues.filter(i => /✅|prima|goed|aanwezig|snel|bevat &lt;h1&gt;|bevat &lt;title&gt;|captcha/i.test(i));
-        const bad = issues.filter(i => !good.includes(i));
     
         const header = `
           <h3><i class='fas fa-check-circle'></i> Scanresultaat voor ${url}</h3>
           <p><strong>📊 Website Score:</strong> <span style="color:${scoreColor(score)}; font-size:1.3rem;">${score}/100</span></p>
         `;
     
-        const goodList = good.length ? `
+        const goodList = positives.length ? `
           <h4 style="color:#81c784; margin-top:1.5rem;"><i class="fas fa-thumbs-up"></i> Goed geregeld</h4>
-          <ul>${good.map(i => `<li><i class="fas fa-check"></i> ${i}</li>`).join('')}</ul>
+          <ul>${positives.map(i => `<li><i class="fas fa-check-circle"></i> ${i}</li>`).join('')}</ul>
         ` : "";
     
-        const badList = bad.length ? `
+        const badList = issues.length ? `
           <h4 style="color:#f87171; margin-top:1.5rem;"><i class="fas fa-exclamation-circle"></i> Verbeterpunten</h4>
-          <ul>${bad.map(i => `<li><i class="fas fa-times-circle"></i> ${i}</li>`).join('')}</ul>
-        ` : "";
+          <ul>${issues.map(i => `<li><i class="fas fa-times-circle"></i> ${i}</li>`).join('')}</ul>
+        ` : "<p>🎉 Geen verbeterpunten gevonden!</p>";
     
         resultDiv.innerHTML = header + goodList + badList;
       })
