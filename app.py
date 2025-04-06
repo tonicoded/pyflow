@@ -246,85 +246,89 @@ def calculate_savings():
         "roi_months": roi
     })
 
-from bs4 import BeautifulSoup
-import requests
-import re
+
 
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
     url = request.json.get("url")
-    if not url:
-        return jsonify({"issues": ["❌ Geen URL opgegeven."]})
+    if not url.startswith("http"):
+        url = "https://" + url
 
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
         soup = BeautifulSoup(response.text, "html.parser")
-        text = soup.get_text(separator=' ').lower()
         html = response.text.lower()
 
         issues = []
 
-        # 🔍 Diepe analyse:
+        # 🔍 Formulieren & contactopties
         if not soup.find("form"):
-            issues.append("❌ Geen formulieren gevonden – contactmogelijkheid ontbreekt.")
-        else:
-            issues.append("✅ Formulier gedetecteerd.")
-
-        if not soup.find(string=re.compile(r"afspraak|contact", re.IGNORECASE)):
-            issues.append("❌ Geen zichtbare 'contact' of 'afspraak'-mogelijkheid op de homepage.")
-        else:
-            issues.append("✅ Contact/Afspraak genoemd in tekst.")
-
+            issues.append("Geen formulieren gevonden – mogelijk geen contactmogelijkheid.")
+        if not soup.find(string=lambda t: "contact" in t.lower() or "afspraak" in t.lower()):
+            issues.append("Geen duidelijke 'contact' of 'afspraak'-link.")
         if "mailto:" not in html:
-            issues.append("❌ Geen e-mailadres (mailto:) gevonden.")
-        else:
-            issues.append("✅ E-mailadres gevonden.")
-
+            issues.append("Geen e-mailadres zichtbaar.")
         if "tel:" not in html:
-            issues.append("❌ Geen telefoonnummer (tel:) gevonden.")
-        else:
-            issues.append("✅ Telefoonnummer gevonden.")
+            issues.append("Geen telefoonnummer zichtbaar.")
 
-        if not any(word in text for word in ["automatisering", "procesoptimalisatie", "workflow", "efficiëntie"]):
-            issues.append("❌ Geen duidelijke vermelding van automatisering of processen.")
-        else:
-            issues.append("✅ Vermelding van automatisering of gerelateerde termen.")
+        # 🧠 Automatisering
+        if "automatisering" not in html:
+            issues.append("Geen focus op automatisering – kans om dit beter te vermelden.")
+        if len(soup.find_all("script")) < 2:
+            issues.append("Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
 
-        if "cookie" not in text and "privacy" not in text:
-            issues.append("❌ Geen cookie- of privacybeleid vermeld – mogelijk juridisch risico.")
-        else:
-            issues.append("✅ Cookie- of privacybeleid vermeld.")
+        # 👀 Juridisch en vertrouwen
+        if not re.search(r"cookie|privacy|avg|gdpr", html):
+            issues.append("Geen cookie- of privacybeleid gevonden – juridisch risico.")
 
-        if not any("contact" in link.get("href", "").lower() for link in soup.find_all("a", href=True)):
-            issues.append("❌ Geen link naar contactpagina gevonden.")
+        # 💬 Chatbots
+        if any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
+            pass  # goed!
         else:
-            issues.append("✅ Link naar contactpagina aanwezig.")
+            issues.append("Geen chatbot gedetecteerd – overweeg live chat voor klantenservice.")
 
-        if not any(kw in text for kw in ["neem contact op", "plan een demo", "vraag een offerte aan"]):
-            issues.append("❌ Geen duidelijke call-to-action.")
+        # 📊 Tracking tools
+        if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
+            pass
         else:
-            issues.append("✅ Call-to-action aanwezig.")
+            issues.append("Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
 
-        if "wp-content" in html:
-            issues.append("ℹ️ Website draait waarschijnlijk op WordPress.")
-        elif "shopify" in html:
-            issues.append("ℹ️ Website draait waarschijnlijk op Shopify.")
-        elif "wix" in html or "wixsite" in html:
-            issues.append("ℹ️ Website draait waarschijnlijk op Wix.")
-        else:
-            issues.append("ℹ️ CMS onbekend of maatwerk.")
+        # 📱 Mobiel & responsive
+        if not soup.find("meta", attrs={"name": "viewport"}):
+            issues.append("Geen viewport-tag – kan slecht werken op mobiel.")
 
-        page_size_kb = len(response.content) / 1024
-        if page_size_kb > 2500:
-            issues.append(f"⚠️ Pagina is vrij groot ({int(page_size_kb)}KB) – kan invloed hebben op laadtijd.")
-        else:
-            issues.append(f"✅ Paginaformaat is normaal ({int(page_size_kb)}KB).")
+        # 🔍 Technische SEO
+        if not soup.find("title"):
+            issues.append("Geen <title> tag gevonden.")
+        if not soup.find("meta", attrs={"name": "description"}):
+            issues.append("Geen meta-description – belangrijk voor Google.")
+        if not soup.find("img", alt=True):
+            issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
+
+        # 📦 Structured Data
+        if "schema.org" not in html:
+            issues.append("Geen gestructureerde data (Schema.org) gevonden.")
+
+        # 🚀 Formulier test
+        forms = soup.find_all("form")
+        if forms:
+            try:
+                form_action = forms[0].get("action") or url
+                post_result = requests.post(form_action, data={"test": "pyflow-scan"}, timeout=5)
+                if "captcha" in post_result.text.lower():
+                    issues.append("Formulier bevat CAPTCHA – goed tegen spam.")
+                else:
+                    issues.append("Formulier getest – geen CAPTCHA gedetecteerd.")
+            except Exception:
+                issues.append("Formuliertest mislukt – kan niet worden verzonden.")
+
+        if not issues:
+            issues = ["Top! Alles lijkt op orde – maar er is altijd ruimte voor verdere automatisering."]
 
         return jsonify({"issues": issues})
 
     except Exception as e:
-        return jsonify({"issues": [f"❌ Fout bij analyseren: {str(e)}"]})
-
+        return jsonify({"issues": [f"❌ Fout tijdens analyse: {str(e)}"]})
 
 if __name__ == "__main__":
     app.run(debug=False)
