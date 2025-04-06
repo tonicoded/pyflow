@@ -306,15 +306,15 @@ def website_scan():
 
         # 🔍 Technische SEO
         if not soup.find("title"):
-            issues.append("Geen <title> tag gevonden.")
+            issues.append("Geen &lt;title&gt; tag gevonden.")
         if not soup.find("meta", attrs={"name": "description"}):
             issues.append("Geen meta-description – belangrijk voor Google.")
         if not soup.find("img", alt=True):
             issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
         if len(soup.find_all("h1")) == 0:
-            issues.append("Geen <h1> tag gevonden – essentieel voor SEO.")
+            issues.append("Geen &lt;h1&gt; tag gevonden – essentieel voor SEO.")
         elif len(soup.find_all("h1")) > 1:
-            issues.append("Meerdere <h1> tags gevonden – kan verwarrend zijn voor zoekmachines.")
+            issues.append("Meerdere &lt;h1&gt; tags gevonden – kan verwarrend zijn voor zoekmachines.")
 
         # 📦 Structured Data
         if "schema.org" not in html:
