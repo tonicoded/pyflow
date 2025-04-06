@@ -337,7 +337,7 @@ def website_scan():
             issues.append("Geen <title> tag gevonden.")
 
         description = soup.find("meta", attrs={"name": "description"})
-        if description and description.get("content", "").strip():
+        if description and description.get("content"):
             positives.append("Meta-description aanwezig.")
         else:
             issues.append("Geen meta-description – belangrijk voor Google.")
@@ -412,10 +412,17 @@ def website_scan():
             except:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
-        # ✅ Positieve lijst opschonen (voorkom rare strings zoals 'Bevat')
-        positives = [p for p in positives if p.strip() and len(p.strip()) > 5 and not re.fullmatch(r"\b(bevat)\b", p.strip(), re.IGNORECASE)]
+        # ✅ VERWIJDER FOUTEN ("Bevat", te kort, leeg)
+        positives = [
+            p for p in positives
+            if p.strip()
+            and len(p.strip()) > 5
+            and not p.strip().lower() == "bevat"
+            and not p.strip().lower().startswith("bevat alleen")
+            and not re.fullmatch(r"bevat\b", p.strip().lower())
+        ]
 
-        # ✅ Score berekenen
+        # ✅ Score berekening
         score = max(30, 100 - len(issues) * 5)
 
         return jsonify({
