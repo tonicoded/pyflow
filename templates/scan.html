@@ -418,12 +418,16 @@ body.light-mode .scan-output {
     
         const goodList = `
           <h4 style="color:#81c784; margin-top:1.5rem;"><i class="fas fa-thumbs-up"></i> Goed geregeld</h4>
-          <ul>${positives.map(i => `<li><i class="fas fa-check-circle"></i> ${i}</li>`).join('') || "<li>Geen positieve punten gevonden.</li>"}</ul>
+          <ul>
+            ${positives.length > 0 ? positives.map(i => `<li><i class="fas fa-check-circle"></i> ${i}</li>`).join('') : '<li>Geen positieve punten gevonden.</li>'}
+          </ul>
         `;
     
         const badList = `
           <h4 style="color:#f87171; margin-top:1.5rem;"><i class="fas fa-exclamation-circle"></i> Verbeterpunten</h4>
-          <ul>${issues.map(i => `<li><i class="fas fa-times-circle"></i> ${i}</li>`).join('') || "<li>Geen verbeterpunten gevonden.</li>"}</ul>
+          <ul>
+            ${issues.length > 0 ? issues.map(i => `<li><i class="fas fa-times-circle"></i> ${i}</li>`).join('') : '<li>🎉 Geen verbeterpunten gevonden!</li>'}
+          </ul>
         `;
     
         resultDiv.innerHTML = header + goodList + badList;
@@ -442,6 +446,7 @@ body.light-mode .scan-output {
       return "#e57373"; // rood
     }
     </script>
+    
     
     
     
