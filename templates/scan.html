@@ -291,10 +291,11 @@ body.light-mode .scan-output {
 }
 
 .scan-output li::before {
-  content: "🧠";
-  position: absolute;
-  left: 0;
+  content: "✔";
+  color: #81c784;
+  font-weight: bold;
 }
+
 @media screen and (max-width: 500px) {
   .scan-output h4 {
     font-size: 1.1rem;
@@ -309,6 +310,11 @@ body.light-mode .scan-output {
   .scan-output {
     padding: 1.5rem;
   }
+}
+.scan-output li.issue::before {
+  content: "✖";
+  color: #ef4444;
+  font-weight: bold;
 }
 
   </style>
@@ -460,7 +466,42 @@ function escapeHTML(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
+const cats = data.categories || {};
+const chartData = [
+  cats.seo || 0,
+  cats.contact || 0,
+  cats.juridisch || 0,
+  cats.techniek || 0
+];
 
+const ctx = document.createElement('canvas');
+ctx.id = "scanChart";
+ctx.style.marginTop = "2rem";
+resultDiv.appendChild(ctx);
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['SEO', 'Contact', 'Juridisch', 'Techniek'],
+    datasets: [{
+      label: 'Categorie Score',
+      data: [70, 100, 50, 80], // ➜ deze waardes bereken je straks dynamisch
+      backgroundColor: ['#60a5fa', '#34d399', '#f87171', '#fbbf24'],
+      borderRadius: 8
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100
+      }
+    },
+    plugins: {
+      legend: { display: false }
+    }
+  }
+});
 
 
     </script>
@@ -468,7 +509,8 @@ function escapeHTML(str) {
     
   
     
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ 
 <script src="{{ url_for('static', filename='js/script3.js') }}"></script>
 </body>
 </html>
