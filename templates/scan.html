@@ -290,11 +290,6 @@ body.light-mode .scan-output {
   position: relative;
 }
 
-.scan-output li::before {
-  content: "✔";
-  color: #81c784;
-  font-weight: bold;
-}
 
 @media screen and (max-width: 500px) {
   .scan-output h4 {
@@ -311,11 +306,7 @@ body.light-mode .scan-output {
     padding: 1.5rem;
   }
 }
-.scan-output li.issue::before {
-  content: "✖";
-  color: #ef4444;
-  font-weight: bold;
-}
+
 
   </style>
   
@@ -387,6 +378,8 @@ body.light-mode .scan-output {
                 </form>
               
                 <div id="scan-result" class="scan-output hidden"></div>
+                <canvas id="scanChart" width="600" height="280" style="margin-top: 2rem;"></canvas>
+
               </section>
 
 </div>
