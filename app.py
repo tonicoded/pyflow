@@ -250,18 +250,29 @@ def calculate_savings():
 
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
+    import re
+    import time
+    from urllib.parse import urljoin
+    from bs4 import BeautifulSoup
+    import requests
+
     url = request.json.get("url")
+    if not url:
+        return jsonify({"issues": ["Geen URL opgegeven."], "score": 0})
     if not url.startswith("http"):
         url = "https://" + url
 
     try:
-        response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+        headers = {"User-Agent": "Mozilla/5.0"}
+        start_time = time.time()
+        response = requests.get(url, timeout=10, headers=headers)
+        load_time = time.time() - start_time
         soup = BeautifulSoup(response.text, "html.parser")
         html = response.text.lower()
 
         issues = []
 
-        # 🔍 Formulieren & contactopties
+        # 🔍 Contactmogelijkheden
         if not soup.find("form"):
             issues.append("Geen formulieren gevonden – mogelijk geen contactmogelijkheid.")
         if not soup.find(string=lambda t: "contact" in t.lower() or "afspraak" in t.lower()):
@@ -282,15 +293,11 @@ def website_scan():
             issues.append("Geen cookie- of privacybeleid gevonden – juridisch risico.")
 
         # 💬 Chatbots
-        if any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
-            pass  # goed!
-        else:
+        if not any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
             issues.append("Geen chatbot gedetecteerd – overweeg live chat voor klantenservice.")
 
         # 📊 Tracking tools
-        if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
-            pass
-        else:
+        if not any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
             issues.append("Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
 
         # 📱 Mobiel & responsive
@@ -304,17 +311,49 @@ def website_scan():
             issues.append("Geen meta-description – belangrijk voor Google.")
         if not soup.find("img", alt=True):
             issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
+        if len(soup.find_all("h1")) == 0:
+            issues.append("Geen <h1> tag gevonden – essentieel voor SEO.")
+        elif len(soup.find_all("h1")) > 1:
+            issues.append("Meerdere <h1> tags gevonden – kan verwarrend zijn voor zoekmachines.")
 
         # 📦 Structured Data
         if "schema.org" not in html:
             issues.append("Geen gestructureerde data (Schema.org) gevonden.")
+
+        # ⚡️ Laadtijd
+        if load_time > 3:
+            issues.append(f"Laadtijd is traag ({round(load_time, 2)} seconden) – optimalisatie aanbevolen.")
+
+        # 🧱 Caching / CDN
+        if "cache-control" not in response.headers:
+            issues.append("Geen 'Cache-Control' header – kan prestaties beïnvloeden.")
+        if "cloudflare" not in response.headers.get("Server", "").lower():
+            issues.append("Geen CDN gedetecteerd (zoals Cloudflare) – mogelijk te verbeteren.")
+
+        # 🔗 Gebroken links check (max 10 interne links)
+        links = soup.find_all("a", href=True)
+        broken = 0
+        for link in links[:10]:
+            href = link["href"]
+            if href.startswith("http") and url not in href:
+                continue  # Externe links negeren
+            try:
+                test_url = urljoin(url, href)
+                r = requests.get(test_url, timeout=5)
+                if r.status_code >= 400:
+                    broken += 1
+            except:
+                broken += 1
+        if broken > 0:
+            issues.append(f"{broken} interne links lijken niet te werken (404 of foutmelding).")
 
         # 🚀 Formulier test
         forms = soup.find_all("form")
         if forms:
             try:
                 form_action = forms[0].get("action") or url
-                post_result = requests.post(form_action, data={"test": "pyflow-scan"}, timeout=5)
+                action_url = urljoin(url, form_action)
+                post_result = requests.post(action_url, data={"test": "pyflow-scan"}, timeout=5)
                 if "captcha" in post_result.text.lower():
                     issues.append("Formulier bevat CAPTCHA – goed tegen spam.")
                 else:
@@ -322,13 +361,21 @@ def website_scan():
             except Exception:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
+        # 🧮 Scoreberekening
+        score = max(30, 100 - len(issues) * 5)
+
+        # ✅ Als alles goed is
         if not issues:
             issues = ["Top! Alles lijkt op orde – maar er is altijd ruimte voor verdere automatisering."]
 
-        return jsonify({"issues": issues})
+        return jsonify({
+            "issues": issues,
+            "score": score
+        })
 
     except Exception as e:
-        return jsonify({"issues": [f"❌ Fout tijdens analyse: {str(e)}"]})
+        return jsonify({"issues": [f"❌ Fout tijdens analyse: {str(e)}"], "score": 0})
+
 
 if __name__ == "__main__":
     app.run(debug=False)
