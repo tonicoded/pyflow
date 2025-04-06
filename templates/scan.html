@@ -295,6 +295,22 @@ body.light-mode .scan-output {
   position: absolute;
   left: 0;
 }
+@media screen and (max-width: 500px) {
+  .scan-output h4 {
+    font-size: 1.1rem;
+    margin-top: 1.2rem;
+  }
+
+  .scan-output li {
+    font-size: 0.95rem;
+    padding-left: 1.2rem;
+  }
+
+  .scan-output {
+    padding: 1.5rem;
+  }
+}
+
   </style>
   
 </head>
@@ -396,13 +412,25 @@ body.light-mode .scan-output {
         const score = data.score || 0;
         const issues = data.issues || [];
     
+        const good = issues.filter(i => /✅|prima|goed|aanwezig|snel|bevat &lt;h1&gt;|bevat &lt;title&gt;|captcha/i.test(i));
+        const bad = issues.filter(i => !good.includes(i));
+    
         const header = `
           <h3><i class='fas fa-check-circle'></i> Scanresultaat voor ${url}</h3>
           <p><strong>📊 Website Score:</strong> <span style="color:${scoreColor(score)}; font-size:1.3rem;">${score}/100</span></p>
         `;
     
-        const list = issues.map(i => `<li><i class='fas fa-search'></i> ${i}</li>`).join('');
-        resultDiv.innerHTML = `${header}<ul>${list}</ul>`;
+        const goodList = good.length ? `
+          <h4 style="color:#81c784; margin-top:1.5rem;"><i class="fas fa-thumbs-up"></i> Goed geregeld</h4>
+          <ul>${good.map(i => `<li><i class="fas fa-check"></i> ${i}</li>`).join('')}</ul>
+        ` : "";
+    
+        const badList = bad.length ? `
+          <h4 style="color:#f87171; margin-top:1.5rem;"><i class="fas fa-exclamation-circle"></i> Verbeterpunten</h4>
+          <ul>${bad.map(i => `<li><i class="fas fa-times-circle"></i> ${i}</li>`).join('')}</ul>
+        ` : "";
+    
+        resultDiv.innerHTML = header + goodList + badList;
       })
       .catch(() => {
         resultDiv.innerHTML = `
@@ -412,7 +440,6 @@ body.light-mode .scan-output {
       });
     }
     
-    // ✅ Simpele helper voor scorekleur
     function scoreColor(score) {
       if (score >= 90) return "#81c784"; // groen
       if (score >= 70) return "#fbc02d"; // geel
