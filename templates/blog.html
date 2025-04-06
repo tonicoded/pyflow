@@ -223,7 +223,7 @@ body.light-mode #filter-select {
   {% for post in blog_posts %}
   <article class="blog-card" data-date="{{ post.date }}" data-title="{{ post.title }}">
     <img src="{{ post.img }}" alt="{{ post.title }}" style="width: 100%; border-radius: 12px; object-fit: cover; max-height: 220px;">
-    <p class="date">Gepubliceerd op <strong>{{ post.date | date("d MMMM yyyy") }}</strong></p>
+    <p class="date">Gepubliceerd op <strong>{{ post.date }}</strong></p>
     <h3>{{ post.title }}</h3>
     <p class="desc">{{ post.desc }}</p>
     <a class="read-more" href="{{ post.url }}">Lees artikel →</a>
