@@ -6,6 +6,7 @@ from flask import send_from_directory
 import time
 from flask import request, redirect
 from dotenv import load_dotenv
+from datetime import datetime
 load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -99,23 +100,23 @@ def blog():
         {
             "title": "Hoe deze Rijschoolhouder 6 Avonden Vrij won met Automatisering",
             "url": "/blog/automatiseren-voor-rijscholen",
-            "date": "2025-04-06",
+            "date": datetime.strptime("2025-04-06", "%Y-%m-%d"),
             "img": "/static/rijschool.jpg",
-            "desc": "Jan uit Utrecht had genoeg van losse appjes, Excel en vergeten facturen. Nu regelt een script zijn planning. En hij? Die kijkt eindelijk Netflix."
+            "desc": "Jan uit Utrecht had genoeg van losse appjes, Excel en vergeten facturen..."
         },
         {
             "title": "Automatisering voor Kappers: Minder Gedoe, Meer Tijd",
             "url": "/blog/automatiseren-voor-kappers",
-            "date": "2025-04-05",
+            "date": datetime.strptime("2025-04-05", "%Y-%m-%d"),
             "img": "/static/kapper.jpg",
-            "desc": "Als kapper heb je al genoeg aan je hoofd. Ontdek hoe salons tijd besparen met online boekingen, automatische herinneringen en meer overzicht."
+            "desc": "Als kapper heb je al genoeg aan je hoofd. Ontdek hoe salons tijd besparen..."
         },
         {
             "title": "Hoe Automatisering je Bedrijf Elke Maand Uren Tijd Bespaart",
             "url": "/blog/tijdbesparen-met-automatisering",
-            "date": "2025-04-01",
+            "date": datetime.strptime("2025-04-01", "%Y-%m-%d"),
             "img": "/static/tijdbesparen.jpg",
-            "desc": "Ontdek hoe slimme tools je helpen repetitieve taken te verminderen en ruimte vrijmaken voor groei. Minder handwerk, meer impact."
+            "desc": "Ontdek hoe slimme tools je helpen repetitieve taken te verminderen..."
         }
     ]
     return render_template("blog.html", blog_posts=blog_posts, time=int(time.time()))
