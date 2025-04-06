@@ -251,7 +251,7 @@ def calculate_savings():
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
     def add_positive(positives, text):
-        if text and len(text.strip()) > 6 and not re.match(r"(?i)^bevat[ .]*$", text.strip()):
+        if text and len(text.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", text.strip()):
             positives.append(text.strip())
 
     def add_issue(issues, text):
@@ -414,8 +414,8 @@ def website_scan():
             except:
                 add_issue(issues, "Formuliertest mislukt – kan niet worden verzonden.")
 
-        # FINAL FILTER (sanity check)
-        positives = [p for p in positives if p and len(p.strip()) > 6 and not re.match(r"(?i)^bevat[ .]*$", p.strip())]
+        # BACKUP SANITY FILTER
+        positives = [p for p in positives if p and len(p.strip()) > 6 and "bevat" not in p.strip().lower()[:6]]
         issues = [i for i in issues if i and len(i.strip()) > 6 and not re.match(r"(?i)^geen[ .]*$", i.strip())]
 
         score = max(30, 100 - len(issues) * 5)
@@ -432,6 +432,7 @@ def website_scan():
             "positives": [],
             "score": 0
         })
+
 
 
 if __name__ == "__main__":
