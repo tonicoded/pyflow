@@ -322,7 +322,7 @@ def website_scan():
 
         # ⚡️ Laadtijd
         if load_time > 3:
-            issues.append(f"Laadtijd is traag ({round(load_time, 2)} seconden) – optimalisatie aanbevolen.")
+            issues.append(f"Laadtijd is traag ({round(load_time, 2)} sec) – optimalisatie aanbevolen.")
 
         # 🧱 Caching / CDN
         if "cache-control" not in response.headers:
@@ -362,11 +362,11 @@ def website_scan():
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
         # 🧮 Scoreberekening
-        score = max(30, 100 - len(issues) * 5)
+        base_score = 100
+        score = max(30, base_score - len(issues) * 5)
 
-        # ✅ Als alles goed is
         if not issues:
-            issues = ["Top! Alles lijkt op orde – maar er is altijd ruimte voor verdere automatisering."]
+            issues = ["✅ Alles lijkt in orde – maar er is altijd ruimte voor verbetering."]
 
         return jsonify({
             "issues": issues,
@@ -374,7 +374,11 @@ def website_scan():
         })
 
     except Exception as e:
-        return jsonify({"issues": [f"❌ Fout tijdens analyse: {str(e)}"], "score": 0})
+        return jsonify({
+            "issues": [f"❌ Fout tijdens analyse: {str(e)}"],
+            "score": 0
+        })
+
 
 
 if __name__ == "__main__":
