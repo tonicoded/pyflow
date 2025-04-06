@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>Automatisering voor Rijscholen: Meer Grip en Minder Gedoe | PyFlow</title>
+  <link rel="canonical" href="https://www.pyflow.nl/blog/automatiseren-voor-rijscholen">
+
+ <!-- SEO Meta -->
+ <meta name="description" content="Ontdek hoe rijschoolhouders zoals Jan rust en overzicht kregen dankzij automatisering. Geen Excel, geen chaos, maar grip op je planning.">
+ <meta name="keywords" content="automatisering rijschool, rijschool software, afspraken rijles, administratie rijschool, facturen automatisch, PyFlow">
+
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Automatisering voor Rijscholen: Meer Grip en Minder Gedoe">
+  <meta property="og:description" content="Geen Excel, geen stress. Lees hoe rijschoolhouders tijd besparen met slimme automatisering.">
+  <meta property="og:image" content="https://www.pyflow.nl/static/rijschool.jpg">
+  <meta property="og:url" content="https://www.pyflow.nl/blog/automatiseren-voor-rijscholen">
+  <meta property="og:type" content="article">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Automatisering voor Rijscholen: Meer Grip en Minder Gedoe">
+  <meta name="twitter:description" content="Rijschool automatiseren? Minder stress, meer overzicht. Bekijk het praktijkvoorbeeld van Jan uit Utrecht.">
+  <meta name="twitter:image" content="https://www.pyflow.nl/static/rijschool.jpg">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/static/favicon.png?v=2">
+  <link rel="shortcut icon" href="/static/favicon.png?v=2">
+  <link rel="apple-touch-icon" href="/static/logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles5.css') }}?v={{ time }}">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Automatisering voor Rijscholen: Meer Grip en Minder Gedoe",
+      "image": "https://www.pyflow.nl/static/rijschool.jpg",
+      "author": { "@type": "Person", "name": "Anthony Verruijt" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PyFlow",
+        "logo": { "@type": "ImageObject", "url": "https://www.pyflow.nl/static/logo.png" }
+      },
+      "datePublished": "2025-04-06",
+      "description": "Lees hoe een rijschoolhouder uit Utrecht zijn werkdruk halveerde met slimme automatisering. Geen chaos meer, maar overzicht en rust."
+    }
+    </script>
+    
+    
+  <!-- Blog Style Injectie -->
+  <style>
+    .blog-article {
+      max-width: 900px;
+      margin: 3rem auto;
+      background-color: #1e1e1e;
+      padding: 3rem;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      line-height: 1.75;
+      font-family: 'Segoe UI', sans-serif;
+      transition: all 0.3s ease;
+    }
+  
+    body.light-mode .blog-article {
+      background-color: #fdfdfd;
+      color: #222;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+  
+    .blog-article h1 {
+      font-size: 2.2rem;
+      color: #64b5f6;
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+  
+    .blog-article h1::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(to right, #64b5f6, #81c784);
+      margin-top: 0.6rem;
+      border-radius: 2px;
+    }
+  
+    .blog-article h2 {
+      font-size: 1.4rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: #81c784;
+      font-weight: 600;
+      border-left: 4px solid #81c784;
+      padding-left: 0.8rem;
+    }
+  
+    .blog-article p {
+      margin-bottom: 1.4rem;
+      color: #ccc;
+      font-size: 1.07rem;
+    }
+  
+    body.light-mode .blog-article p {
+      color: #333;
+    }
+  
+    .blog-article ul {
+      margin: 0 0 1rem 1.2rem;
+      padding-left: 1rem;
+    }
+  
+    .blog-article li {
+      margin-bottom: 0.5rem;
+      color: #ccc;
+    }
+  
+    body.light-mode .blog-article li {
+      color: #333;
+    }
+  
+    .blog-article .publish-date {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+  
+    body.light-mode .blog-article .publish-date {
+      color: #777;
+    }
+  
+    .blog-article a {
+      color: #81c784;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+  
+    .blog-article a:hover {
+      text-decoration: underline;
+      color: #a5d6a7;
+    }
+  
+    .voordelen-lijst {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+  
+    .voordeel {
+      background-color: rgba(255, 255, 255, 0.04);
+      padding: 1rem 1.3rem;
+      border-radius: 12px;
+      font-size: 1.02rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #ddd;
+      transition: all 0.3s ease;
+    }
+  
+    .voordeel::before {
+      content: "✔";
+      margin-right: 0.5rem;
+      color: #81c784;
+      font-weight: bold;
+    }
+  
+    body.light-mode .voordeel {
+      background-color: #f3f3f3;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+  
+    @media screen and (max-width: 600px) {
+      .blog-article {
+        padding: 1.5rem;
+      }
+  
+      .blog-article h1 {
+        font-size: 1.8rem;
+      }
+  
+      .blog-article h2 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+  
+</head>
+
+<body>
+    <!-- Dark Mode Toggle Switch -->
+<div id="dark-mode-toggle" onclick="toggleDarkMode()">
+    <div class="toggle-track">
+        <div class="toggle-thumb"></div>
+    </div>
+</div>
+
+    <canvas id="backgroundCanvas"></canvas>
+    
+    <div id="menu">
+        <div id="menu-icon" onclick="toggleMenu()">☰</div>
+        <nav id="menu-content">
+            <div id="menu-close" onclick="toggleMenu()">
+                <span>&times;</span>
+            </div>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/automatiseren">Waarom Automatiseren?</a></li>
+                <li><a href="/besparings-calculator">Besparings Calculator</a></li>
+                <li><a href="/overons">Over ons</a></li>
+                <li><a href="/prijsindicatie">Prijsindicatie</a></li>
+                <li><a href="https://demo.pyflow.nl/">Demo Showcase</a></li>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/contact">Contact opnemen</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    
+    <div id="content">
+        <div id="hero">
+            <div id="logo-container">
+                <img id="logo" src="/static/logo.png" alt="PyFlow Logo">
+                <div id="logo-overlay"></div>
+            </div>
+            <h1 id="glitch-text" style="display: none;">PyFlow</h1>
+            <p id="subtitle"></p>
+            <!-- 🌟 Socials Sectie -->
+            <div id="socials">
+                <a href="https://x.com/PyFlowNL" target="_blank" class="social-icon" aria-label="X">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
+                <a href="https://nl.linkedin.com/in/anthony-verruijt-a34073314" target="_blank" class="social-icon" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="mailto:anthony@pyflow.nl" class="social-icon" aria-label="E-mail">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="tel:0640470662" class="social-icon" aria-label="Bel ons">
+                    <i class="fas fa-phone"></i>
+                </a>
+            </div>
+
+
+            <div class="blog-article">
+
+                <h1>Hoe deze rijschoolhouder zijn chaos inruilde voor overzicht (en 6 vrije avonden won)</h1>
+                <img src="/static/rijschool.jpg" alt="Lesauto met tablet" style="width: 100%; max-height: 360px; object-fit: cover; border-radius: 14px; margin-bottom: 1.5rem;">
+                <p class="publish-date">Gepubliceerd op: 6 april 2025</p>
+              
+                <p>
+                  Dinsdagavond, 21:46. Jan – eigenaar van een rijschool in Utrecht – zit op de bank met zijn laptop op schoot.  
+                  Niet om te ontspannen. Maar om te <em>uitrekenen</em> wie hoeveel lessen gehad heeft.  
+                  En of Mike z’n openstaande bedrag nu wel of niet betaald heeft.  
+                  Ondertussen pingt z’n telefoon: "Hoi Jan, kan ik morgenochtend nog ergens tussen?”
+                </p>
+              
+                <p>
+                  Herkenbaar? Dan ben je niet de enige.  
+                  De meeste rijscholen werken met een wirwar aan WhatsApp, agenda’s, Excel en losse notities.  
+                  Je bent rijinstructeur, boekhouder, planner én incassomedewerker tegelijk.
+                </p>
+              
+                <h2>Tot je het anders gaat doen.</h2>
+              
+                <p>
+                  Wat als leerlingen zélf afspraken boeken via een link?  
+                  Wat als die afspraken automatisch in je agenda verschijnen, met automatische reminders erbij?  
+                  Wat als je aan het eind van de dag geen bonnen meer hoeft te maken, omdat ze al in PDF in de inbox van je leerling staan?
+                </p>
+              
+                <p>
+                  Dat is geen droom. Dat is automatisering zoals wij die bouwen bij PyFlow.  
+                  Simpel, stijlvol, en gemaakt voor mensen zoals Jan – die liever rijden dan rekenen.
+                </p>
+              
+                <h2>Wat Jan nu doet op dinsdagavond?</h2>
+                <p>
+                  Netflix kijken.  
+                  Want zijn agenda vult zich automatisch.  
+                  Zijn betalingen staan in een dashboard.  
+                  En bij no-shows wordt automatisch een annuleringsmail gestuurd.
+                </p>
+              
+                <blockquote style="margin: 1.5rem 0; font-style: italic; color: #bbb; border-left: 4px solid #81c784; padding-left: 1rem;">
+                  “Het voelt alsof ik ineens een assistent heb. Alleen praat deze niet terug.”  
+                  – Jan, rijschoolhouder uit Utrecht
+                </blockquote>
+              
+                <h2>Klaar voor minder geregel?</h2>
+                <p>
+                  Als jij klaar bent met Excel en eindeloze appjes, laten we praten.  
+                  Boek een demo of speel met onze <a href="/besparings-calculator">besparingscalculator</a>.  
+                  Eén week. Eén verandering. En jij rijdt fluitend de week door.
+                </p>
+              
+              </div>
+              
+</div>
+</div>
+<footer id="footer">
+  &copy; PyFlow 2025
+</footer>
+
+<script src="{{ url_for('static', filename='js/script3.js') }}"></script>
+</body>
+</html>

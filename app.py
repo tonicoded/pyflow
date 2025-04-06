@@ -72,6 +72,7 @@ def sitemap():
         <url><loc>https://www.pyflow.nl/dashboard-data</loc><priority>0.6</priority></url>
         <url><loc>https://www.pyflow.nl/blog/tijdbesparen-met-automatisering</loc><priority>0.6</priority></url>
         <url><loc>https://www.pyflow.nl/blog/automatiseren-voor-kappers</loc><priority>0.7</priority></url>
+        <url><loc>https://www.pyflow.nl/blog/automatiseren-voor-rijscholen</loc><priority>0.7</priority></url>
     </urlset>
     """
     return Response(sitemap_xml, mimetype="application/xml")
@@ -97,6 +98,9 @@ def blog_tijdbesparen():
 @app.route('/blog/automatiseren-voor-kappers')
 def automatisering_kapper():
     return render_template("automatisering_kapper.html", time=int(time.time()))
+@app.route('/blog/automatiseren-voor-rijscholen')
+def automatisering_rijschool():
+    return render_template("blog_rijschool.html", time=int(time.time()))
 
 
 @app.route('/prijsindicatie')
