@@ -330,14 +330,12 @@ def website_scan():
             issues.append("Geen viewport-tag – kan slecht werken op mobiel.")
 
         # SEO
-        title = soup.find("title")
-        if title and title.text.strip():
+        if soup.find("title"):
             positives.append("Bevat <title> tag – essentieel voor SEO.")
         else:
             issues.append("Geen <title> tag gevonden.")
 
-        description = soup.find("meta", attrs={"name": "description"})
-        if description and description.get("content"):
+        if soup.find("meta", attrs={"name": "description"}):
             positives.append("Meta-description aanwezig.")
         else:
             issues.append("Geen meta-description – belangrijk voor Google.")
@@ -347,8 +345,7 @@ def website_scan():
         else:
             issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
 
-        h1_tags = soup.find_all("h1")
-        h1_count = len(h1_tags)
+        h1_count = len(soup.find_all("h1"))
         if h1_count == 1:
             positives.append("Bevat één <h1> tag – goed voor SEO.")
         elif h1_count == 0:
@@ -379,7 +376,7 @@ def website_scan():
         else:
             issues.append("Geen CDN gedetecteerd (zoals Cloudflare) – mogelijk te verbeteren.")
 
-        # LINK CHECK
+        # LINKS
         links = soup.find_all("a", href=True)
         broken = 0
         for link in links[:10]:
@@ -398,7 +395,7 @@ def website_scan():
         else:
             positives.append("Alle geteste interne links werken goed.")
 
-        # CAPTCHA CHECK
+        # CAPTCHA TEST
         forms = soup.find_all("form")
         if forms:
             try:
@@ -412,10 +409,10 @@ def website_scan():
             except:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
-        # ✅ Cleanup: filter lege of generieke strings
+        # ✅ FILTER ongeldig restafval zoals "Bevat"
         positives = [p for p in positives if p.strip().lower() != "bevat"]
 
-        # ✅ Score berekening
+        # SCORE
         score = max(30, 100 - len(issues) * 5)
 
         return jsonify({

@@ -393,13 +393,13 @@ body.light-mode .scan-output {
       e.preventDefault();
       const url = document.getElementById("scan-url").value.trim();
       const resultDiv = document.getElementById("scan-result");
-  
+    
       resultDiv.innerHTML = `
         <div style="text-align:center; font-size:1.1rem;">
           <i class='fas fa-circle-notch fa-spin'></i> Bezig met analyseren...
         </div>`;
       resultDiv.classList.remove("hidden");
-  
+    
       fetch("/website-scan", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
@@ -410,26 +410,26 @@ body.light-mode .scan-output {
         const score = data.score ?? 0;
         const positives = Array.isArray(data.positives) ? data.positives : [];
         const issues = Array.isArray(data.issues) ? data.issues : [];
-  
+    
         const header = `
           <h3><i class='fas fa-check-circle'></i> Scanresultaat voor ${url}</h3>
           <p><strong>📊 Website Score:</strong> <span style="color:${scoreColor(score)}; font-size:1.3rem;">${score}/100</span></p>
         `;
-  
+    
         const goodList = `
           <h4 style="color:#81c784; margin-top:1.5rem;"><i class="fas fa-thumbs-up"></i> Goed geregeld</h4>
           <ul>
             ${positives.length > 0 ? positives.map(i => `<li><i class="fas fa-check-circle"></i> ${i}</li>`).join('') : '<li>Geen positieve punten gevonden.</li>'}
           </ul>
         `;
-  
+    
         const badList = `
           <h4 style="color:#f87171; margin-top:1.5rem;"><i class="fas fa-exclamation-circle"></i> Verbeterpunten</h4>
           <ul>
             ${issues.length > 0 ? issues.map(i => `<li><i class="fas fa-times-circle"></i> ${i}</li>`).join('') : '<li>🎉 Geen verbeterpunten gevonden!</li>'}
           </ul>
         `;
-  
+    
         resultDiv.innerHTML = header + goodList + badList;
       })
       .catch(() => {
@@ -439,13 +439,14 @@ body.light-mode .scan-output {
           </p>`;
       });
     }
-  
+    
     function scoreColor(score) {
       if (score >= 90) return "#81c784"; // groen
       if (score >= 70) return "#fbc02d"; // geel
       return "#e57373"; // rood
     }
-  </script>
+    </script>
+    
   
     
     
