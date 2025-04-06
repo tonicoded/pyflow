@@ -78,6 +78,21 @@ def sitemap():
     return Response(sitemap_xml, mimetype="application/xml")
 
 
+
+
+
+
+@app.route('/favicon.png')
+def favicon():
+    return send_from_directory('static', 'favicon.png')
+@app.route('/automatiseren')
+def automatiseren():
+    return render_template("automatiseren.html", time=int(time.time()))
+
+@app.route('/overons')
+def overons():
+    return render_template("overons.html", time=int(time.time()))
+
 @app.route('/blog')
 def blog():
     blog_posts = [
@@ -104,23 +119,6 @@ def blog():
         }
     ]
     return render_template("blog.html", blog_posts=blog_posts, time=int(time.time()))
-
-
-
-@app.route('/favicon.png')
-def favicon():
-    return send_from_directory('static', 'favicon.png')
-@app.route('/automatiseren')
-def automatiseren():
-    return render_template("automatiseren.html", time=int(time.time()))
-
-@app.route('/overons')
-def overons():
-    return render_template("overons.html", time=int(time.time()))
-
-@app.route('/blog')
-def blog():
-    return render_template("blog.html", time=int(time.time()))
 @app.route('/blog/tijdbesparen-met-automatisering')
 def blog_tijdbesparen():
     return render_template("blog_tijdbesparen.html", time=int(time.time()))
