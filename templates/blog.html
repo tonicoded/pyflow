@@ -74,16 +74,17 @@
       text-align: center;
     }
     
-    /* Blogkaart */
     .blog-card {
-      background: linear-gradient(145deg, #1c1c1c, #232323);
-      padding: 2rem;
-      border-radius: 18px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-      transition: all 0.3s ease;
-      position: relative;
-      color: #ddd;
-    }
+  background: linear-gradient(145deg, #1c1c1c, #232323);
+  padding: 2rem;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  color: #ddd;
+  margin-bottom: 2rem; /* 👈 marge tussen de posts */
+}
+
     
     .blog-card:hover {
       transform: translateY(-4px);
@@ -164,6 +165,12 @@ body.light-mode #filter-select {
   background: #eee;
   color: #222;
 }
+@media (max-width: 768px) {
+  #blog-list {
+    gap: 1.5rem;
+  }
+}
+
     </style>
     
 </head>
