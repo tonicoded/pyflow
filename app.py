@@ -7,7 +7,7 @@ import time
 from flask import request, redirect
 from dotenv import load_dotenv
 from datetime import datetime
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -250,11 +250,11 @@ def calculate_savings():
 
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
-    import re
-    import time
-    from urllib.parse import urljoin
-    from bs4 import BeautifulSoup
-    import requests
+
+
+    def add_positive(positives, text):
+        if text and len(text.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", text.strip()):
+            positives.append(text.strip())
 
     url = request.json.get("url")
     if not url:
@@ -273,62 +273,113 @@ def website_scan():
         issues = []
         positives = []
 
-        # ✅ Contact
+        # CONTACT
         if soup.find("form"):
-            positives.append("Formulier aanwezig – contactmogelijkheid gedetecteerd.")
+            add_positive(positives, "Formulier aanwezig – contactmogelijkheid gedetecteerd.")
+        else:
+            issues.append("Geen formulieren gevonden – mogelijk geen contactmogelijkheid.")
+
         if soup.find(string=lambda t: t and ("contact" in t.lower() or "afspraak" in t.lower())):
-            positives.append("Contact/afspraak-link aanwezig.")
+            add_positive(positives, "Contact/afspraak-link aanwezig.")
+        else:
+            issues.append("Geen duidelijke 'contact' of 'afspraak'-link.")
+
         if "mailto:" in html:
-            positives.append("E-mailadres zichtbaar.")
+            add_positive(positives, "E-mailadres zichtbaar.")
+        else:
+            issues.append("Geen e-mailadres zichtbaar.")
+
         if "tel:" in html:
-            positives.append("Telefoonnummer zichtbaar.")
+            add_positive(positives, "Telefoonnummer zichtbaar.")
+        else:
+            issues.append("Geen telefoonnummer zichtbaar.")
 
-        # ✅ Automatisering
+        # AUTOMATISERING
         if "automatisering" in html:
-            positives.append("Focus op automatisering gevonden.")
+            add_positive(positives, "Focus op automatisering gevonden.")
+        else:
+            issues.append("Geen focus op automatisering – kans om dit beter te vermelden.")
+
         if len(soup.find_all("script")) >= 2:
-            positives.append("Dynamische scripts aanwezig.")
+            add_positive(positives, "Dynamische scripts aanwezig.")
+        else:
+            issues.append("Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
 
-        # ✅ Juridisch
+        # JURIDISCH
         if re.search(r"cookie|privacy|avg|gdpr", html):
-            positives.append("Cookie- of privacybeleid aanwezig.")
+            add_positive(positives, "Cookie- of privacybeleid aanwezig.")
+        else:
+            issues.append("Geen cookie- of privacybeleid gevonden – juridisch risico.")
 
-        # ✅ Viewport
+        # CHATBOT
+        if any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
+            add_positive(positives, "Chatbot gedetecteerd.")
+        else:
+            issues.append("Geen chatbot gedetecteerd – overweeg live chat voor klantenservice.")
+
+        # TRACKING
+        if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
+            add_positive(positives, "Analytics/tracking gevonden.")
+        else:
+            issues.append("Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
+
+        # VIEWPORT
         if soup.find("meta", attrs={"name": "viewport"}):
-            positives.append("Viewport-tag aanwezig – goed voor mobiel.")
+            add_positive(positives, "Viewport-tag aanwezig – goed voor mobiel.")
+        else:
+            issues.append("Geen viewport-tag – kan slecht werken op mobiel.")
 
-        # ✅ SEO
-        if soup.find("title"):
-            positives.append("Bevat <title> tag – essentieel voor SEO.")
-        if soup.find("meta", attrs={"name": "description"}):
-            positives.append("Meta-description aanwezig.")
+        # SEO
+        title = soup.find("title")
+        if title and title.text.strip():
+            add_positive(positives, "Bevat <title> tag – essentieel voor SEO.")
+        else:
+            issues.append("Geen <title> tag gevonden.")
+
+        description = soup.find("meta", attrs={"name": "description"})
+        if description and description.get("content"):
+            add_positive(positives, "Meta-description aanwezig.")
+        else:
+            issues.append("Geen meta-description – belangrijk voor Google.")
+
         if soup.find("img", alt=True):
-            positives.append("Afbeeldingen met alt-tekst aanwezig.")
+            add_positive(positives, "Afbeeldingen met alt-tekst aanwezig.")
+        else:
+            issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
+
         h1_tags = soup.find_all("h1")
-        if len(h1_tags) == 1:
-            positives.append("Bevat één <h1> tag – goed voor SEO.")
-        elif len(h1_tags) == 0:
+        h1_count = len(h1_tags)
+        if h1_count == 1:
+            add_positive(positives, "Bevat één <h1> tag – goed voor SEO.")
+        elif h1_count == 0:
             issues.append("Geen <h1> tag gevonden – essentieel voor SEO.")
         else:
-            issues.append("Meerdere <h1> tags gevonden – verwarrend voor zoekmachines.")
+            issues.append("Meerdere <h1> tags gevonden – kan verwarrend zijn voor zoekmachines.")
 
-        # ✅ Structured data
+        # STRUCTURED DATA
         if "schema.org" in html:
-            positives.append("Gestructureerde data (Schema.org) gevonden.")
+            add_positive(positives, "Gestructureerde data (Schema.org) gevonden.")
+        else:
+            issues.append("Geen gestructureerde data (Schema.org) gevonden.")
 
-        # ✅ Laadtijd
+        # LAADTIJD
         if load_time <= 3:
-            positives.append(f"Goede laadtijd ({round(load_time, 2)} sec).")
+            add_positive(positives, f"Goede laadtijd ({round(load_time, 2)} sec).")
         else:
             issues.append(f"Laadtijd is traag ({round(load_time, 2)} sec) – optimalisatie aanbevolen.")
 
-        # ✅ Cache/CDN
+        # CACHE & CDN
         if "cache-control" in response.headers:
-            positives.append("Cache-Control header aanwezig.")
-        if "cloudflare" in response.headers.get("Server", "").lower():
-            positives.append("CDN gedetecteerd (Cloudflare).")
+            add_positive(positives, "Cache-Control header aanwezig.")
+        else:
+            issues.append("Geen 'Cache-Control' header – kan prestaties beïnvloeden.")
 
-        # ✅ Links
+        if "cloudflare" in response.headers.get("Server", "").lower():
+            add_positive(positives, "CDN gedetecteerd (Cloudflare).")
+        else:
+            issues.append("Geen CDN gedetecteerd (zoals Cloudflare) – mogelijk te verbeteren.")
+
+        # LINKS
         links = soup.find_all("a", href=True)
         broken = 0
         for link in links[:10]:
@@ -345,9 +396,9 @@ def website_scan():
         if broken > 0:
             issues.append(f"{broken} interne links lijken niet te werken (404 of foutmelding).")
         else:
-            positives.append("Alle geteste interne links werken goed.")
+            add_positive(positives, "Alle geteste interne links werken goed.")
 
-        # ✅ Formulier test
+        # FORMULIER
         forms = soup.find_all("form")
         if forms:
             try:
@@ -355,19 +406,15 @@ def website_scan():
                 action_url = urljoin(url, form_action)
                 post_result = requests.post(action_url, data={"test": "pyflow-scan"}, timeout=5)
                 if "captcha" in post_result.text.lower():
-                    positives.append("Formulier bevat CAPTCHA – goed tegen spam.")
+                    add_positive(positives, "Formulier bevat CAPTCHA – goed tegen spam.")
                 else:
-                    positives.append("Formulier getest – geen CAPTCHA gedetecteerd.")
+                    add_positive(positives, "Formulier getest – geen CAPTCHA gedetecteerd.")
             except:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
-        # ✅ FOUTFILTER: verwijder vage of corrupte entries
-        positives = [
-            p for p in positives
-            if p and len(p.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", p.strip())
-        ]
+        # LAATSTE BACKUP CLEANUP (extra voorzichtigheid)
+        positives = [p for p in positives if p and len(p.strip()) > 6 and "bevat" not in p.strip().lower()[:6]]
 
-        # ✅ Score berekening
         score = max(30, 100 - len(issues) * 5)
 
         return jsonify({

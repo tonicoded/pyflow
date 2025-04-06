@@ -409,9 +409,19 @@ function startScan(e) {
     .then(data => {
       const score = data.score ?? 0;
       const rawPositives = Array.isArray(data.positives) ? data.positives : [];
-      const positives = rawPositives.filter(p =>
-        p && p.trim().length > 6 && !/^bevat[ .]*$/i.test(p.trim())
-      );
+
+      // ✅ Verwijder alleen exact "Bevat" of "Bevat." etc., NIET geldige zinnen
+      const positives = rawPositives.filter(p => {
+        const trimmed = p.trim().toLowerCase();
+        return (
+          trimmed.length > 6 &&
+          trimmed !== "bevat" &&
+          trimmed !== "bevat." &&
+          trimmed !== "bevat .." &&
+          !/^bevat[\s.]*$/i.test(trimmed)
+        );
+      });
+
       const issues = Array.isArray(data.issues) ? data.issues : [];
 
       const header = `
@@ -444,6 +454,7 @@ function scoreColor(score) {
   if (score >= 70) return "#fbc02d";
   return "#e57373";
 }
+
 
     </script>
     
