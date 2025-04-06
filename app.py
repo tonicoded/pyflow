@@ -119,6 +119,9 @@ def blog():
         }
     ]
     return render_template("blog.html", blog_posts=blog_posts, time=int(time.time()))
+
+
+
 @app.route('/blog/tijdbesparen-met-automatisering')
 def blog_tijdbesparen():
     return render_template("blog_tijdbesparen.html", time=int(time.time()))
