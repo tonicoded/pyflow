@@ -332,7 +332,7 @@ def website_scan():
         # SEO
         title = soup.find("title")
         if title and title.text.strip():
-            add_positive(positives, "Bevat <title> tag – essentieel voor SEO.")
+            add_positive(positives, "<title> tag gevonden – essentieel voor SEO.")
         else:
             issues.append("Geen <title> tag gevonden.")
 
