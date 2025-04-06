@@ -96,6 +96,9 @@ def automatiseren():
 @app.route('/overons')
 def overons():
     return render_template("overons.html", time=int(time.time()))
+@app.route('/scan')
+def scan():
+    return render_template("scan.html", time=int(time.time()))
 
 @app.route('/blog')
 def blog():
