@@ -330,12 +330,14 @@ def website_scan():
             issues.append("Geen viewport-tag – kan slecht werken op mobiel.")
 
         # SEO
-        if soup.find("title"):
+        title = soup.find("title")
+        if title and title.text.strip():
             positives.append("Bevat <title> tag – essentieel voor SEO.")
         else:
             issues.append("Geen <title> tag gevonden.")
 
-        if soup.find("meta", attrs={"name": "description"}):
+        description = soup.find("meta", attrs={"name": "description"})
+        if description and description.get("content", "").strip():
             positives.append("Meta-description aanwezig.")
         else:
             issues.append("Geen meta-description – belangrijk voor Google.")
@@ -345,7 +347,8 @@ def website_scan():
         else:
             issues.append("Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
 
-        h1_count = len(soup.find_all("h1"))
+        h1_tags = soup.find_all("h1")
+        h1_count = len(h1_tags)
         if h1_count == 1:
             positives.append("Bevat één <h1> tag – goed voor SEO.")
         elif h1_count == 0:
@@ -376,7 +379,7 @@ def website_scan():
         else:
             issues.append("Geen CDN gedetecteerd (zoals Cloudflare) – mogelijk te verbeteren.")
 
-        # LINKS
+        # LINK CHECK
         links = soup.find_all("a", href=True)
         broken = 0
         for link in links[:10]:
@@ -395,7 +398,7 @@ def website_scan():
         else:
             positives.append("Alle geteste interne links werken goed.")
 
-        # CAPTCHA TEST
+        # CAPTCHA CHECK
         forms = soup.find_all("form")
         if forms:
             try:
@@ -409,10 +412,10 @@ def website_scan():
             except:
                 issues.append("Formuliertest mislukt – kan niet worden verzonden.")
 
-        # ✅ FILTER ongeldig restafval zoals "Bevat"
-        positives = [p for p in positives if p.strip().lower() != "bevat"]
+        # ✅ Positieve lijst opschonen (voorkom rare strings zoals 'Bevat')
+        positives = [p for p in positives if p.strip() and len(p.strip()) > 5 and not re.fullmatch(r"\b(bevat)\b", p.strip(), re.IGNORECASE)]
 
-        # SCORE
+        # ✅ Score berekenen
         score = max(30, 100 - len(issues) * 5)
 
         return jsonify({
@@ -427,7 +430,6 @@ def website_scan():
             "positives": [],
             "score": 0
         })
-
 
 
 
