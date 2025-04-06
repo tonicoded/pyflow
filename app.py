@@ -432,6 +432,9 @@ def website_scan():
         })
 
     except Exception as e:
+        # ✅ Verbeterde opschoning - verwijder generieke of incomplete entries
+        positives = [p for p in positives if p.strip() and len(p.strip()) > 8 and not p.strip().lower().startswith("bevat ")]
+
         return jsonify({
             "issues": [f"❌ Fout tijdens analyse: {str(e)}"],
             "positives": [],
