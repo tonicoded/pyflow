@@ -378,7 +378,7 @@ body.light-mode .scan-output {
                 </form>
               
                 <div id="scan-result" class="scan-output hidden"></div>
-                <canvas id="scanChart" width="600" height="280" style="margin-top: 2rem;"></canvas>
+
 
               </section>
 
@@ -459,42 +459,7 @@ function escapeHTML(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 }
-const cats = data.categories || {};
-const chartData = [
-  cats.seo || 0,
-  cats.contact || 0,
-  cats.juridisch || 0,
-  cats.techniek || 0
-];
 
-const ctx = document.createElement('canvas');
-ctx.id = "scanChart";
-ctx.style.marginTop = "2rem";
-resultDiv.appendChild(ctx);
-
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['SEO', 'Contact', 'Juridisch', 'Techniek'],
-    datasets: [{
-      label: 'Categorie Score',
-      data: [70, 100, 50, 80], // ➜ deze waardes bereken je straks dynamisch
-      backgroundColor: ['#60a5fa', '#34d399', '#f87171', '#fbbf24'],
-      borderRadius: 8
-    }]
-  },
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 100
-      }
-    },
-    plugins: {
-      legend: { display: false }
-    }
-  }
-});
 
 
     </script>
@@ -502,7 +467,7 @@ new Chart(ctx, {
     
   
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
  
 <script src="{{ url_for('static', filename='js/script3.js') }}"></script>
 </body>

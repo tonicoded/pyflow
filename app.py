@@ -428,17 +428,10 @@ def website_scan():
 
     except Exception as e:
         return jsonify({
-  "issues": issues,
-  "positives": positives,
-  "score": score,
-  "categories": {
-    "seo": 70,
-    "contact": 100,
-    "juridisch": 50,
-    "techniek": 80
-  }
-})
-
+            "issues": [f"❌ Fout tijdens analyse: {str(e)}"],
+            "positives": [],
+            "score": 0
+        })
 
 
 
