@@ -248,12 +248,9 @@ def calculate_savings():
 
 
 
-from flask import request, jsonify
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
-import requests
-import time
-import re
+
+
+
 
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
@@ -279,7 +276,6 @@ def website_scan():
         max_pages = 15
         start_time = time.time()
 
-        # Crawl tot max_pages bereikt is
         while to_visit and len(visited) < max_pages:
             current = to_visit.pop(0)
             if current in visited or not current.startswith(url):
@@ -310,7 +306,7 @@ def website_scan():
             add_issue(issues, "Geen formulieren gevonden – mogelijk geen contactmogelijkheid.")
 
         if soup.find(string=lambda t: t and ("contact" in t.lower() or "afspraak" in t.lower())):
-            add_positive(positives, "Contact/afspraak-link aanwezig.")
+            add_positive(positives, "Contact- of afspraak-link aanwezig.")
         else:
             add_issue(issues, "Geen duidelijke 'contact' of 'afspraak'-link.")
 
@@ -324,118 +320,125 @@ def website_scan():
         else:
             add_issue(issues, "Geen telefoonnummer zichtbaar.")
 
-        # LIVE CHAT (uitgebreid)
-        chat_keywords = ["tawk.to", "intercom", "crisp.chat", "livechat", "chat-widget", "chatlio", "tidio", "zendesk", "olark"]
-        live_chat_detected = any(kw in html for kw in chat_keywords)
+        # LIVE CHAT (uitgebreid detectie)
+        live_chat_keywords = [
+            "tawk.to", "intercom", "crisp.chat", "livechat", "chat-widget", "chatlio",
+            "tidio", "zendesk", "olark", "freshchat", "smartsupp", "userlike"
+        ]
+        live_chat_detected = any(kw in html for kw in live_chat_keywords)
+
         if not live_chat_detected:
             for div in soup.find_all("div", class_=True):
-                if any("chat" in cls for cls in div.get("class", [])):
+                if any("chat" in cls.lower() for cls in div.get("class", [])):
                     live_chat_detected = True
                     break
+
         if live_chat_detected:
-            add_positive(positives, "Live chat gedetecteerd.")
+            add_positive(positives, "Live chat gedetecteerd – directe klantondersteuning.")
         else:
-            add_issue(issues, "Geen live chat gevonden – overweeg directe klantenservice.")
+            add_issue(issues, "Geen live chat gevonden – overweeg klantenservice via chat.")
 
         # AUTOMATISERING
         if "automatisering" in html:
             add_positive(positives, "Focus op automatisering gevonden.")
         else:
-            add_issue(issues, "Geen focus op automatisering – kans om dit beter te vermelden.")
+            add_issue(issues, "Geen focus op automatisering – dit kan sterker.")
 
         if len(soup.find_all("script")) >= 2:
             add_positive(positives, "Dynamische scripts aanwezig.")
         else:
-            add_issue(issues, "Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
+            add_issue(issues, "Weinig interactieve scripts – is de site dynamisch genoeg?")
 
         # JURIDISCH
         if re.search(r"cookie|privacy|avg|gdpr", html):
             add_positive(positives, "Cookie- of privacybeleid aanwezig.")
         else:
-            add_issue(issues, "Geen cookie- of privacybeleid gevonden – juridisch risico.")
+            add_issue(issues, "Geen cookie- of privacybeleid – risico voor AVG/GDPR.")
 
         # TRACKING
         if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
             add_positive(positives, "Analytics/tracking gevonden.")
         else:
-            add_issue(issues, "Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
+            add_issue(issues, "Geen analytics gevonden – je mist inzichten.")
 
         # VIEWPORT
         if soup.find("meta", attrs={"name": "viewport"}):
-            add_positive(positives, "Viewport-tag aanwezig – goed voor mobiel.")
+            add_positive(positives, "Viewport-tag aanwezig – mobielvriendelijk.")
         else:
-            add_issue(issues, "Geen viewport-tag – kan slecht werken op mobiel.")
+            add_issue(issues, "Geen viewport-tag – site kan slecht schalen op mobiel.")
 
         # SEO
         title = soup.find("title")
         if title and title.text.strip():
-            add_positive(positives, "Bevat <title> tag – essentieel voor SEO.")
+            add_positive(positives, "Bevat <title> tag – belangrijk voor SEO.")
         else:
-            add_issue(issues, "Geen <title> tag gevonden – essentieel voor SEO.")
+            add_issue(issues, "Geen <title> tag – essentieel voor vindbaarheid.")
 
         description = soup.find("meta", attrs={"name": "description"})
         if description and description.get("content"):
             add_positive(positives, "Meta-description aanwezig.")
         else:
-            add_issue(issues, "Geen meta-description – belangrijk voor Google.")
+            add_issue(issues, "Geen meta-description – gemiste kans op betere ranking.")
 
         if soup.find("img", alt=True):
-            add_positive(positives, "Afbeeldingen met alt-tekst aanwezig.")
+            add_positive(positives, "Afbeeldingen bevatten alt-teksten.")
         else:
-            add_issue(issues, "Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
+            add_issue(issues, "Afbeeldingen zonder alt-tekst – slecht voor SEO/toegankelijkheid.")
 
         h1_tags = soup.find_all("h1")
         if len(h1_tags) == 1:
-            add_positive(positives, "Bevat één <h1> tag – goed voor SEO.")
+            add_positive(positives, "Bevat exact één <h1> tag – goed voor SEO.")
         elif len(h1_tags) == 0:
-            add_issue(issues, "Geen <h1> tag gevonden – essentieel voor SEO.")
+            add_issue(issues, "Geen <h1> tag gevonden – slechte SEO-strategie.")
         else:
-            add_issue(issues, "Meerdere <h1> tags gevonden – kan verwarrend zijn voor zoekmachines.")
+            add_issue(issues, "Meerdere <h1> tags gevonden – verwarring voor zoekmachines.")
 
         # STRUCTURED DATA
         if "schema.org" in html:
-            add_positive(positives, "Gestructureerde data (Schema.org) gevonden.")
+            add_positive(positives, "Gestructureerde data (Schema.org) aanwezig.")
         else:
-            add_issue(issues, "Geen gestructureerde data (Schema.org) gevonden.")
+            add_issue(issues, "Geen gestructureerde data – gemiste kans voor SEO.")
 
-        # EXTRA'S
+        # DESIGN / UX
+        if "prefers-color-scheme" in html:
+            add_positive(positives, "Dark mode ondersteund – moderne UX.")
+        else:
+            add_issue(issues, "Geen dark mode ondersteuning – kan moderner.")
+
         if soup.find("link", rel=lambda x: x and "icon" in x.lower()):
-            add_positive(positives, "Favicon gedetecteerd – visuele herkenbaarheid aanwezig.")
+            add_positive(positives, "Favicon aanwezig – branding goed zichtbaar.")
         else:
-            add_issue(issues, "Geen favicon gevonden – favicon verhoogt herkenning van je site.")
+            add_issue(issues, "Geen favicon – gemiste brandingkans.")
 
+        # SOCIALS
         if any(s in html for s in ["facebook.com", "linkedin.com", "x.com", "instagram.com", "twitter.com"]):
             add_positive(positives, "Social media links aanwezig.")
         else:
-            add_issue(issues, "Geen social media links gevonden – kan je bereik beperken.")
+            add_issue(issues, "Geen social media knoppen – vergroot je bereik.")
 
+        # SITEMAP
         try:
             sitemap_url = url.rstrip("/") + "/sitemap.xml"
             sitemap_res = requests.get(sitemap_url, timeout=5)
             if sitemap_res.status_code == 200 and "<urlset" in sitemap_res.text.lower():
-                add_positive(positives, "Sitemap.xml aanwezig – goed voor zoekmachines.")
+                add_positive(positives, "Sitemap.xml gevonden – helpt bij indexatie.")
             else:
-                add_issue(issues, "Geen sitemap.xml gevonden – essentieel voor SEO.")
+                add_issue(issues, "Geen sitemap.xml – dat maakt Google blind.")
         except:
-            add_issue(issues, "Sitemap.xml niet bereikbaar – controleer of deze goed staat ingesteld.")
+            add_issue(issues, "Sitemap.xml niet bereikbaar.")
 
+        # ROBOTS
         try:
             robots_url = url.rstrip("/") + "/robots.txt"
             robots_res = requests.get(robots_url, timeout=5)
             if "user-agent" in robots_res.text.lower():
-                add_positive(positives, "robots.txt aanwezig – goed voor zoekmachinecontrole.")
+                add_positive(positives, "robots.txt aanwezig – stuurt zoekmachines aan.")
             else:
-                add_issue(issues, "robots.txt lijkt niet correct ingesteld.")
+                add_issue(issues, "robots.txt niet correct ingesteld.")
         except:
-            add_issue(issues, "Geen robots.txt gevonden – zoekmachines weten niet wat ze moeten volgen.")
+            add_issue(issues, "robots.txt niet gevonden.")
 
-        # DARK MODE DETECTIE
-        if "prefers-color-scheme" in html:
-            add_positive(positives, "Ondersteuning voor dark mode – modern en toegankelijk.")
-        else:
-            add_issue(issues, "Geen dark mode ondersteuning gevonden.")
-
-        # CMS HERKENNING
+        # CMS DETECTIE
         if "wp-content" in html:
             add_positive(positives, "CMS gedetecteerd: WordPress.")
         elif "shopify" in html:
@@ -445,24 +448,23 @@ def website_scan():
         elif "drupal" in html:
             add_positive(positives, "CMS gedetecteerd: Drupal.")
         else:
-            add_issue(issues, "CMS niet herkend – mogelijk custom-built.")
+            add_issue(issues, "Geen CMS gedetecteerd – mogelijk handmatig gebouwd.")
 
         # LAADTIJD
         load_time = time.time() - start_time
         if load_time <= 3:
-            add_positive(positives, f"Goede initiële laadtijd ({round(load_time, 2)} sec).")
+            add_positive(positives, f"Goede laadtijd ({round(load_time, 2)} sec).")
         else:
-            add_issue(issues, f"Initiële laadtijd is traag ({round(load_time, 2)} sec).")
+            add_issue(issues, f"Laadtijd is traag ({round(load_time, 2)} sec) – optimalisatie nodig.")
 
-        # FILTERS
-        positives = [p for p in positives if p and len(p.strip()) > 6]
-        issues = [i for i in issues if i and len(i.strip()) > 6]
-
+        # EIND SCORE
+        positives = [p for p in positives if p.strip()]
+        issues = [i for i in issues if i.strip()]
         score = max(30, 100 - len(issues) * 5)
 
         return jsonify({
-            "issues": issues,
             "positives": positives,
+            "issues": issues,
             "score": score,
             "pages_checked": len(visited)
         })
