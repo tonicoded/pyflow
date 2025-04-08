@@ -250,6 +250,13 @@ def calculate_savings():
 
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
+    import time
+    import re
+    from urllib.parse import urljoin
+    import requests
+    from bs4 import BeautifulSoup
+    from flask import request, jsonify
+
     def add_positive(positives, text):
         if text and len(text.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", text.strip()):
             positives.append(text.strip())
@@ -269,8 +276,10 @@ def website_scan():
         visited = set()
         to_visit = [url]
         html_dump = ""
-        max_pages = 15  # Limiet om server niet te overbelasten
-        start_time = time.time()  # ← fix hier!
+        max_pages = 15
+        start_time = time.time()
+
+        # Crawl tot max_pages bereikt is
         while to_visit and len(visited) < max_pages:
             current = to_visit.pop(0)
             if current in visited or not current.startswith(url):
@@ -281,7 +290,6 @@ def website_scan():
                 soup = BeautifulSoup(response.text, "html.parser")
                 html_dump += response.text.lower()
 
-                # Zoek nieuwe interne links
                 for a in soup.find_all("a", href=True):
                     href = urljoin(current, a["href"])
                     if href.startswith(url) and href not in visited:
@@ -391,7 +399,38 @@ def website_scan():
         else:
             add_issue(issues, f"Initiële laadtijd is traag ({round(load_time, 2)} sec).")
 
-        # BACKUP SANITY FILTER
+        # EXTRA CHECKS
+        if soup.find("link", rel=lambda x: x and "icon" in x.lower()):
+            add_positive(positives, "Favicon gedetecteerd – visuele herkenbaarheid aanwezig.")
+        else:
+            add_issue(issues, "Geen favicon gevonden – favicon verhoogt herkenning van je site.")
+
+        if any(s in html for s in ["facebook.com", "linkedin.com", "x.com", "instagram.com", "twitter.com"]):
+            add_positive(positives, "Social media links aanwezig.")
+        else:
+            add_issue(issues, "Geen social media links gevonden – kan je bereik beperken.")
+
+        try:
+            sitemap_url = url.rstrip("/") + "/sitemap.xml"
+            sitemap_res = requests.get(sitemap_url, timeout=5)
+            if sitemap_res.status_code == 200 and "<urlset" in sitemap_res.text.lower():
+                add_positive(positives, "Sitemap.xml aanwezig – goed voor zoekmachines.")
+            else:
+                add_issue(issues, "Geen sitemap.xml gevonden – essentieel voor SEO.")
+        except:
+            add_issue(issues, "Sitemap.xml niet bereikbaar – controleer of deze goed staat ingesteld.")
+
+        try:
+            robots_url = url.rstrip("/") + "/robots.txt"
+            robots_res = requests.get(robots_url, timeout=5)
+            if "user-agent" in robots_res.text.lower():
+                add_positive(positives, "robots.txt aanwezig – goed voor zoekmachinecontrole.")
+            else:
+                add_issue(issues, "robots.txt lijkt niet correct ingesteld.")
+        except:
+            add_issue(issues, "Geen robots.txt gevonden – zoekmachines weten niet wat ze moeten volgen.")
+
+        # FILTERS
         positives = [p for p in positives if p and len(p.strip()) > 6 and "bevat" not in p.strip().lower()[:6]]
         issues = [i for i in issues if i and len(i.strip()) > 6 and not re.match(r"(?i)^geen[ .]*$", i.strip())]
 
@@ -410,7 +449,6 @@ def website_scan():
             "positives": [],
             "score": 0
         })
-
 
 
 if __name__ == "__main__":
