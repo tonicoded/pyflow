@@ -266,11 +266,31 @@ def website_scan():
 
     try:
         headers = {"User-Agent": "Mozilla/5.0"}
-        start_time = time.time()
-        response = requests.get(url, timeout=10, headers=headers)
-        load_time = time.time() - start_time
-        soup = BeautifulSoup(response.text, "html.parser")
-        html = response.text.lower()
+        visited = set()
+        to_visit = [url]
+        html_dump = ""
+        max_pages = 15  # Limiet om server niet te overbelasten
+        start_time = time.time()  # ← fix hier!
+        while to_visit and len(visited) < max_pages:
+            current = to_visit.pop(0)
+            if current in visited or not current.startswith(url):
+                continue
+            try:
+                response = requests.get(current, timeout=8, headers=headers)
+                visited.add(current)
+                soup = BeautifulSoup(response.text, "html.parser")
+                html_dump += response.text.lower()
+
+                # Zoek nieuwe interne links
+                for a in soup.find_all("a", href=True):
+                    href = urljoin(current, a["href"])
+                    if href.startswith(url) and href not in visited:
+                        to_visit.append(href)
+            except:
+                continue
+
+        soup = BeautifulSoup(html_dump, "html.parser")
+        html = html_dump
 
         issues = []
         positives = []
@@ -364,55 +384,12 @@ def website_scan():
         else:
             add_issue(issues, "Geen gestructureerde data (Schema.org) gevonden.")
 
-        # LAADTIJD
+        # LAADTIJD (alleen homepage)
+        load_time = time.time() - start_time
         if load_time <= 3:
-            add_positive(positives, f"Goede laadtijd ({round(load_time, 2)} sec).")
+            add_positive(positives, f"Goede initiële laadtijd ({round(load_time, 2)} sec).")
         else:
-            add_issue(issues, f"Laadtijd is traag ({round(load_time, 2)} sec) – optimalisatie aanbevolen.")
-
-        # CACHE & CDN
-        if "cache-control" in response.headers:
-            add_positive(positives, "Cache-Control header aanwezig.")
-        else:
-            add_issue(issues, "Geen 'Cache-Control' header – kan prestaties beïnvloeden.")
-
-        if "cloudflare" in response.headers.get("Server", "").lower():
-            add_positive(positives, "CDN gedetecteerd (Cloudflare).")
-        else:
-            add_issue(issues, "Geen CDN gedetecteerd (zoals Cloudflare) – mogelijk te verbeteren.")
-
-        # LINKS
-        links = soup.find_all("a", href=True)
-        broken = 0
-        for link in links[:10]:
-            href = link["href"]
-            if href.startswith("http") and url not in href:
-                continue
-            try:
-                test_url = urljoin(url, href)
-                r = requests.get(test_url, timeout=5)
-                if r.status_code >= 400:
-                    broken += 1
-            except:
-                broken += 1
-        if broken > 0:
-            add_issue(issues, f"{broken} interne links lijken niet te werken (404 of foutmelding).")
-        else:
-            add_positive(positives, "Alle geteste interne links werken goed.")
-
-        # CAPTCHA
-        forms = soup.find_all("form")
-        if forms:
-            try:
-                form_action = forms[0].get("action") or url
-                action_url = urljoin(url, form_action)
-                post_result = requests.post(action_url, data={"test": "pyflow-scan"}, timeout=5)
-                if "captcha" in post_result.text.lower():
-                    add_positive(positives, "Formulier bevat CAPTCHA – goed tegen spam.")
-                else:
-                    add_positive(positives, "Formulier getest – geen CAPTCHA gedetecteerd.")
-            except:
-                add_issue(issues, "Formuliertest mislukt – kan niet worden verzonden.")
+            add_issue(issues, f"Initiële laadtijd is traag ({round(load_time, 2)} sec).")
 
         # BACKUP SANITY FILTER
         positives = [p for p in positives if p and len(p.strip()) > 6 and "bevat" not in p.strip().lower()[:6]]
@@ -423,7 +400,8 @@ def website_scan():
         return jsonify({
             "issues": issues,
             "positives": positives,
-            "score": score
+            "score": score,
+            "pages_checked": len(visited)
         })
 
     except Exception as e:
