@@ -248,15 +248,15 @@ def calculate_savings():
 
 
 
+from flask import request, jsonify
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+import requests
+import time
+import re
+
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
-    import time
-    import re
-    from urllib.parse import urljoin
-    import requests
-    from bs4 import BeautifulSoup
-    from flask import request, jsonify
-
     def add_positive(positives, text):
         if text and len(text.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", text.strip()):
             positives.append(text.strip())
@@ -324,6 +324,19 @@ def website_scan():
         else:
             add_issue(issues, "Geen telefoonnummer zichtbaar.")
 
+        # LIVE CHAT (uitgebreid)
+        chat_keywords = ["tawk.to", "intercom", "crisp.chat", "livechat", "chat-widget", "chatlio", "tidio", "zendesk", "olark"]
+        live_chat_detected = any(kw in html for kw in chat_keywords)
+        if not live_chat_detected:
+            for div in soup.find_all("div", class_=True):
+                if any("chat" in cls for cls in div.get("class", [])):
+                    live_chat_detected = True
+                    break
+        if live_chat_detected:
+            add_positive(positives, "Live chat gedetecteerd.")
+        else:
+            add_issue(issues, "Geen live chat gevonden – overweeg directe klantenservice.")
+
         # AUTOMATISERING
         if "automatisering" in html:
             add_positive(positives, "Focus op automatisering gevonden.")
@@ -340,12 +353,6 @@ def website_scan():
             add_positive(positives, "Cookie- of privacybeleid aanwezig.")
         else:
             add_issue(issues, "Geen cookie- of privacybeleid gevonden – juridisch risico.")
-
-        # CHATBOT
-        if any(service in html for service in ["tawk.to", "intercom", "crisp.chat", "livechatinc"]):
-            add_positive(positives, "Chatbot gedetecteerd.")
-        else:
-            add_issue(issues, "Geen chatbot gedetecteerd – overweeg live chat voor klantenservice.")
 
         # TRACKING
         if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
@@ -378,10 +385,9 @@ def website_scan():
             add_issue(issues, "Afbeeldingen zonder alt-tekst – slechter voor SEO/toegankelijkheid.")
 
         h1_tags = soup.find_all("h1")
-        h1_count = len(h1_tags)
-        if h1_count == 1:
+        if len(h1_tags) == 1:
             add_positive(positives, "Bevat één <h1> tag – goed voor SEO.")
-        elif h1_count == 0:
+        elif len(h1_tags) == 0:
             add_issue(issues, "Geen <h1> tag gevonden – essentieel voor SEO.")
         else:
             add_issue(issues, "Meerdere <h1> tags gevonden – kan verwarrend zijn voor zoekmachines.")
@@ -392,14 +398,7 @@ def website_scan():
         else:
             add_issue(issues, "Geen gestructureerde data (Schema.org) gevonden.")
 
-        # LAADTIJD (alleen homepage)
-        load_time = time.time() - start_time
-        if load_time <= 3:
-            add_positive(positives, f"Goede initiële laadtijd ({round(load_time, 2)} sec).")
-        else:
-            add_issue(issues, f"Initiële laadtijd is traag ({round(load_time, 2)} sec).")
-
-        # EXTRA CHECKS
+        # EXTRA'S
         if soup.find("link", rel=lambda x: x and "icon" in x.lower()):
             add_positive(positives, "Favicon gedetecteerd – visuele herkenbaarheid aanwezig.")
         else:
@@ -430,9 +429,34 @@ def website_scan():
         except:
             add_issue(issues, "Geen robots.txt gevonden – zoekmachines weten niet wat ze moeten volgen.")
 
+        # DARK MODE DETECTIE
+        if "prefers-color-scheme" in html:
+            add_positive(positives, "Ondersteuning voor dark mode – modern en toegankelijk.")
+        else:
+            add_issue(issues, "Geen dark mode ondersteuning gevonden.")
+
+        # CMS HERKENNING
+        if "wp-content" in html:
+            add_positive(positives, "CMS gedetecteerd: WordPress.")
+        elif "shopify" in html:
+            add_positive(positives, "CMS gedetecteerd: Shopify.")
+        elif "joomla" in html:
+            add_positive(positives, "CMS gedetecteerd: Joomla.")
+        elif "drupal" in html:
+            add_positive(positives, "CMS gedetecteerd: Drupal.")
+        else:
+            add_issue(issues, "CMS niet herkend – mogelijk custom-built.")
+
+        # LAADTIJD
+        load_time = time.time() - start_time
+        if load_time <= 3:
+            add_positive(positives, f"Goede initiële laadtijd ({round(load_time, 2)} sec).")
+        else:
+            add_issue(issues, f"Initiële laadtijd is traag ({round(load_time, 2)} sec).")
+
         # FILTERS
-        positives = [p for p in positives if p and len(p.strip()) > 6 and "bevat" not in p.strip().lower()[:6]]
-        issues = [i for i in issues if i and len(i.strip()) > 6 and not re.match(r"(?i)^geen[ .]*$", i.strip())]
+        positives = [p for p in positives if p and len(p.strip()) > 6]
+        issues = [i for i in issues if i and len(i.strip()) > 6]
 
         score = max(30, 100 - len(issues) * 5)
 
