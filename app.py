@@ -254,13 +254,20 @@ def calculate_savings():
 
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
-    def add_positive(positives, text):
-        if text and len(text.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", text.strip()):
-            positives.append(text.strip())
+    import time
+    import re
+    import requests
+    from urllib.parse import urljoin
+    from bs4 import BeautifulSoup
+    from flask import request, jsonify
 
-    def add_issue(issues, text):
+    def add_positive(lst, text):
+        if text and len(text.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", text.strip()):
+            lst.append(text.strip())
+
+    def add_issue(lst, text):
         if text and len(text.strip()) > 6 and not re.match(r"(?i)^geen[ .]*$", text.strip()):
-            issues.append(text.strip())
+            lst.append(text.strip())
 
     url = request.json.get("url")
     if not url:
@@ -281,10 +288,10 @@ def website_scan():
             if current in visited or not current.startswith(url):
                 continue
             try:
-                response = requests.get(current, timeout=8, headers=headers)
+                res = requests.get(current, timeout=10, headers=headers)
                 visited.add(current)
-                soup = BeautifulSoup(response.text, "html.parser")
-                html_dump += response.text.lower()
+                soup = BeautifulSoup(res.text, "html.parser")
+                html_dump += res.text.lower()
 
                 for a in soup.find_all("a", href=True):
                     href = urljoin(current, a["href"])
@@ -295,9 +302,7 @@ def website_scan():
 
         soup = BeautifulSoup(html_dump, "html.parser")
         html = html_dump
-
-        issues = []
-        positives = []
+        positives, issues = [], []
 
         # CONTACT
         if soup.find("form"):
@@ -306,7 +311,7 @@ def website_scan():
             add_issue(issues, "Geen formulieren gevonden – mogelijk geen contactmogelijkheid.")
 
         if soup.find(string=lambda t: t and ("contact" in t.lower() or "afspraak" in t.lower())):
-            add_positive(positives, "Contact- of afspraak-link aanwezig.")
+            add_positive(positives, "Contact/afspraak-link aanwezig.")
         else:
             add_issue(issues, "Geen duidelijke 'contact' of 'afspraak'-link.")
 
@@ -320,161 +325,140 @@ def website_scan():
         else:
             add_issue(issues, "Geen telefoonnummer zichtbaar.")
 
-        # LIVE CHAT (uitgebreid detectie)
-        live_chat_keywords = [
-            "tawk.to", "intercom", "crisp.chat", "livechat", "chat-widget", "chatlio",
-            "tidio", "zendesk", "olark", "freshchat", "smartsupp", "userlike"
-        ]
-        live_chat_detected = any(kw in html for kw in live_chat_keywords)
-
-        if not live_chat_detected:
-            for div in soup.find_all("div", class_=True):
-                if any("chat" in cls.lower() for cls in div.get("class", [])):
-                    live_chat_detected = True
-                    break
-
-        if live_chat_detected:
-            add_positive(positives, "Live chat gedetecteerd – directe klantondersteuning.")
-        else:
-            add_issue(issues, "Geen live chat gevonden – overweeg klantenservice via chat.")
-
         # AUTOMATISERING
         if "automatisering" in html:
             add_positive(positives, "Focus op automatisering gevonden.")
         else:
-            add_issue(issues, "Geen focus op automatisering – dit kan sterker.")
+            add_issue(issues, "Geen focus op automatisering – kans om dit beter te vermelden.")
 
         if len(soup.find_all("script")) >= 2:
             add_positive(positives, "Dynamische scripts aanwezig.")
         else:
-            add_issue(issues, "Weinig interactieve scripts – is de site dynamisch genoeg?")
+            add_issue(issues, "Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
 
         # JURIDISCH
         if re.search(r"cookie|privacy|avg|gdpr", html):
             add_positive(positives, "Cookie- of privacybeleid aanwezig.")
         else:
-            add_issue(issues, "Geen cookie- of privacybeleid – risico voor AVG/GDPR.")
+            add_issue(issues, "Geen cookie- of privacybeleid gevonden – juridisch risico.")
+
+        # CHATBOT detection (breder)
+        chat_keywords = ["chatbot", "livechat", "crisp.chat", "tawk.to", "intercom", "tidio", "drift", "hubspotchat"]
+        if any(tag in html for tag in chat_keywords) or soup.find(attrs={"data-chat": True}):
+            add_positive(positives, "Live chat of chatbot gedetecteerd.")
+        else:
+            add_issue(issues, "Geen live chat gevonden – overweeg ondersteuning voor klantenservice.")
 
         # TRACKING
-        if any(tag in html for tag in ["gtag", "google-analytics", "hotjar", "clarity"]):
-            add_positive(positives, "Analytics/tracking gevonden.")
+        tracking_keywords = ["gtag", "google-analytics", "hotjar", "clarity", "matomo", "tagmanager"]
+        if any(tag in html for tag in tracking_keywords):
+            add_positive(positives, "Analytics/tracking aanwezig.")
         else:
-            add_issue(issues, "Geen analytics gevonden – je mist inzichten.")
+            add_issue(issues, "Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
 
         # VIEWPORT
         if soup.find("meta", attrs={"name": "viewport"}):
-            add_positive(positives, "Viewport-tag aanwezig – mobielvriendelijk.")
+            add_positive(positives, "Viewport-tag aanwezig – goed voor mobiel.")
         else:
-            add_issue(issues, "Geen viewport-tag – site kan slecht schalen op mobiel.")
+            add_issue(issues, "Geen viewport-tag – mobielvriendelijkheid kan beter.")
+
+        # DARKMODE detectie
+        darkmode_found = any(kw in html for kw in [
+            "prefers-color-scheme", "dark-mode", "theme-dark", "data-theme=\"dark\""
+        ])
+        if darkmode_found:
+            add_positive(positives, "Dark mode ondersteuning gevonden.")
+        else:
+            add_issue(issues, "Geen dark mode ondersteuning – kan moderner.")
 
         # SEO
-        title = soup.find("title")
-        if title and title.text.strip():
-            add_positive(positives, "Bevat <title> tag – belangrijk voor SEO.")
+        if soup.find("title") and soup.find("title").text.strip():
+            add_positive(positives, "Bevat <title> tag – essentieel voor SEO.")
         else:
-            add_issue(issues, "Geen <title> tag – essentieel voor vindbaarheid.")
+            add_issue(issues, "Geen <title> tag gevonden – essentieel voor SEO.")
 
-        description = soup.find("meta", attrs={"name": "description"})
-        if description and description.get("content"):
+        if soup.find("meta", attrs={"name": "description"}):
             add_positive(positives, "Meta-description aanwezig.")
         else:
-            add_issue(issues, "Geen meta-description – gemiste kans op betere ranking.")
+            add_issue(issues, "Geen meta-description – belangrijk voor Google.")
 
         if soup.find("img", alt=True):
-            add_positive(positives, "Afbeeldingen bevatten alt-teksten.")
+            add_positive(positives, "Afbeeldingen met alt-tekst aanwezig.")
         else:
             add_issue(issues, "Afbeeldingen zonder alt-tekst – slecht voor SEO/toegankelijkheid.")
 
         h1_tags = soup.find_all("h1")
         if len(h1_tags) == 1:
-            add_positive(positives, "Bevat exact één <h1> tag – goed voor SEO.")
+            add_positive(positives, "Bevat één <h1> tag – goed voor SEO.")
         elif len(h1_tags) == 0:
-            add_issue(issues, "Geen <h1> tag gevonden – slechte SEO-strategie.")
+            add_issue(issues, "Geen <h1> tag gevonden – essentieel voor SEO.")
         else:
-            add_issue(issues, "Meerdere <h1> tags gevonden – verwarring voor zoekmachines.")
+            add_issue(issues, "Meerdere <h1> tags – verwarrend voor zoekmachines.")
 
         # STRUCTURED DATA
         if "schema.org" in html:
-            add_positive(positives, "Gestructureerde data (Schema.org) aanwezig.")
+            add_positive(positives, "Gestructureerde data (Schema.org) gevonden.")
         else:
-            add_issue(issues, "Geen gestructureerde data – gemiste kans voor SEO.")
+            add_issue(issues, "Geen gestructureerde data (Schema.org) gevonden.")
 
-        # DESIGN / UX
-        if "prefers-color-scheme" in html:
-            add_positive(positives, "Dark mode ondersteund – moderne UX.")
-        else:
-            add_issue(issues, "Geen dark mode ondersteuning – kan moderner.")
-
-        if soup.find("link", rel=lambda x: x and "icon" in x.lower()):
-            add_positive(positives, "Favicon aanwezig – branding goed zichtbaar.")
-        else:
-            add_issue(issues, "Geen favicon – gemiste brandingkans.")
-
-        # SOCIALS
-        if any(s in html for s in ["facebook.com", "linkedin.com", "x.com", "instagram.com", "twitter.com"]):
-            add_positive(positives, "Social media links aanwezig.")
-        else:
-            add_issue(issues, "Geen social media knoppen – vergroot je bereik.")
-
-        # SITEMAP
+        # SITEMAP + ROBOTS.TXT
         try:
-            sitemap_url = url.rstrip("/") + "/sitemap.xml"
-            sitemap_res = requests.get(sitemap_url, timeout=5)
-            if sitemap_res.status_code == 200 and "<urlset" in sitemap_res.text.lower():
-                add_positive(positives, "Sitemap.xml gevonden – helpt bij indexatie.")
+            sitemap = requests.get(url.rstrip("/") + "/sitemap.xml", timeout=5)
+            if sitemap.ok and "<urlset" in sitemap.text.lower():
+                add_positive(positives, "Sitemap.xml aanwezig – goed voor SEO.")
             else:
-                add_issue(issues, "Geen sitemap.xml – dat maakt Google blind.")
+                add_issue(issues, "Geen geldige sitemap.xml gevonden.")
         except:
             add_issue(issues, "Sitemap.xml niet bereikbaar.")
 
-        # ROBOTS
         try:
-            robots_url = url.rstrip("/") + "/robots.txt"
-            robots_res = requests.get(robots_url, timeout=5)
-            if "user-agent" in robots_res.text.lower():
-                add_positive(positives, "robots.txt aanwezig – stuurt zoekmachines aan.")
+            robots = requests.get(url.rstrip("/") + "/robots.txt", timeout=5)
+            if "user-agent" in robots.text.lower():
+                add_positive(positives, "robots.txt aanwezig – zoekmachinebeheer mogelijk.")
             else:
-                add_issue(issues, "robots.txt niet correct ingesteld.")
+                add_issue(issues, "robots.txt lijkt niet correct ingesteld.")
         except:
-            add_issue(issues, "robots.txt niet gevonden.")
+            add_issue(issues, "Geen robots.txt bestand gevonden.")
 
-        # CMS DETECTIE
-        if "wp-content" in html:
-            add_positive(positives, "CMS gedetecteerd: WordPress.")
-        elif "shopify" in html:
-            add_positive(positives, "CMS gedetecteerd: Shopify.")
-        elif "joomla" in html:
-            add_positive(positives, "CMS gedetecteerd: Joomla.")
-        elif "drupal" in html:
-            add_positive(positives, "CMS gedetecteerd: Drupal.")
-        else:
-            add_issue(issues, "Geen CMS gedetecteerd – mogelijk handmatig gebouwd.")
-
-        # LAADTIJD
-        load_time = time.time() - start_time
+        # PERFORMANCE
+        load_time = round(time.time() - start_time, 2)
         if load_time <= 3:
-            add_positive(positives, f"Goede laadtijd ({round(load_time, 2)} sec).")
+            add_positive(positives, f"Goede laadtijd ({load_time} sec).")
         else:
-            add_issue(issues, f"Laadtijd is traag ({round(load_time, 2)} sec) – optimalisatie nodig.")
+            add_issue(issues, f"Laadtijd aan de hoge kant ({load_time} sec).")
 
-        # EIND SCORE
-        positives = [p for p in positives if p.strip()]
-        issues = [i for i in issues if i.strip()]
+        # DESIGN/IDENTITEIT
+        if soup.find("link", rel=lambda x: x and "icon" in x.lower()):
+            add_positive(positives, "Favicon aanwezig – goed voor herkenning.")
+        else:
+            add_issue(issues, "Geen favicon – visuele herkenbaarheid ontbreekt.")
+
+        if any(s in html for s in ["facebook.com", "linkedin.com", "instagram.com", "x.com", "twitter.com"]):
+            add_positive(positives, "Social media links aanwezig.")
+        else:
+            add_issue(issues, "Geen social media links gevonden.")
+
+        # FILTERS
+        positives = [p for p in positives if p and len(p.strip()) > 6]
+        issues = [i for i in issues if i and len(i.strip()) > 6]
+
         score = max(30, 100 - len(issues) * 5)
 
         return jsonify({
-            "positives": positives,
-            "issues": issues,
             "score": score,
+            "issues": issues,
+            "positives": positives,
             "pages_checked": len(visited)
         })
 
     except Exception as e:
         return jsonify({
-            "issues": [f"❌ Fout tijdens analyse: {str(e)}"],
+            "score": 0,
+            "issues": [f"❌ Fout tijdens scan: {str(e)}"],
             "positives": [],
-            "score": 0
+            "pages_checked": 0
         })
+
 
 
 if __name__ == "__main__":
