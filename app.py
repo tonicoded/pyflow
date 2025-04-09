@@ -443,6 +443,7 @@ def website_scan():
             add_positive(positives, "Social media links aanwezig.")
         else:
             add_issue(issues, "Geen social media links gevonden.")
+        tracking_keywords = ["gtag", "google-analytics", "hotjar", "clarity", "matomo", "tagmanager"]
 
         # ✅ Samenvatting
         techniques = []
