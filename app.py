@@ -286,6 +286,10 @@ def website_scan():
                 res = requests.get(current, timeout=10, headers=headers)
                 visited.add(current)
                 soup = BeautifulSoup(res.text, "html.parser")
+                # Alleen zichtbare tekst opslaan (zonder <script>/<style>)
+                for script in soup(["script", "style", "noscript"]):
+                    script.decompose()
+                html_dump += soup.get_text(separator=" ", strip=True).lower() + " "
                 html_dump += res.text.lower()
 
                 for a in soup.find_all("a", href=True):
@@ -299,14 +303,15 @@ def website_scan():
         html = html_dump
         positives, issues = [], []
 
-        # Content score
-        word_count = len(re.findall(r"\b\w+\b", soup.get_text()))
+        # ✅ Content score (alleen zichtbare tekst)
+        text_only = re.sub(r"\s+", " ", soup.get_text(separator=" ", strip=True))
+        word_count = len(re.findall(r"\b\w+\b", text_only))
         if word_count > 300:
             add_positive(positives, f"Voldoende content aanwezig ({word_count} woorden).")
         else:
             add_issue(issues, f"Weinig content op de pagina ({word_count} woorden) – voeg meer inhoud toe.")
 
-        # Contact
+        # ✅ Contact
         if soup.find("form"):
             add_positive(positives, "Formulier aanwezig – contactmogelijkheid gedetecteerd.")
         else:
@@ -327,7 +332,7 @@ def website_scan():
         else:
             add_issue(issues, "Geen telefoonnummer zichtbaar.")
 
-        # Automatisering
+        # ✅ Automatisering
         if "automatisering" in html:
             add_positive(positives, "Focus op automatisering gevonden.")
         else:
@@ -338,43 +343,43 @@ def website_scan():
         else:
             add_issue(issues, "Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
 
-        # Juridisch
+        # ✅ Juridisch
         if re.search(r"cookie|privacy|avg|gdpr", html):
             add_positive(positives, "Cookie- of privacybeleid aanwezig.")
         else:
             add_issue(issues, "Geen cookie- of privacybeleid gevonden – juridisch risico.")
 
-        if any(cls in html for cls in ["cookie-consent", "cookiebanner", "cookie-popup"]):
+        if any(cls in html for cls in ["cookie-consent", "cookiebanner", "cookie-popup", "cookie-notice"]):
             add_positive(positives, "Cookiebanner gedetecteerd – voldoet aan AVG.")
         else:
             add_issue(issues, "Geen cookiebanner gevonden – mogelijk niet AVG-compliant.")
 
-        # Chatbot detection
-        chat_keywords = ["chatbot", "livechat", "crisp.chat", "tawk.to", "intercom", "tidio", "drift", "hubspotchat"]
-        if any(tag in html for tag in chat_keywords) or soup.find(attrs={"data-chat": True}):
+        # ✅ Chatbot (verbeterde detectie)
+        chatbot_keywords = ["chatbot", "livechat", "crisp.chat", "tawk.to", "intercom", "tidio", "drift", "hubspotchat", "zendesk"]
+        if any(tag in html for tag in chatbot_keywords) or soup.find(attrs={"data-chat": True, "id": re.compile("chat", re.I)}):
             add_positive(positives, "Live chat of chatbot gedetecteerd.")
         else:
             add_issue(issues, "Geen live chat gevonden – overweeg ondersteuning voor klantenservice.")
 
-        # Toegankelijkheid (WCAG)
+        # ✅ Toegankelijkheid
         if soup.find(attrs={"aria-label": True}) or "aria-" in html:
             add_positive(positives, "Toegankelijkheidskenmerken (ARIA) aanwezig.")
         else:
             add_issue(issues, "Geen ARIA-labels gevonden – toegankelijkheid kan beter.")
 
-        # Viewport & dark mode
+        # ✅ Viewport & dark mode
         if soup.find("meta", attrs={"name": "viewport"}):
             add_positive(positives, "Viewport-tag aanwezig – goed voor mobiel.")
         else:
             add_issue(issues, "Geen viewport-tag – mobielvriendelijkheid kan beter.")
 
-        darkmode_found = any(kw in html for kw in ["prefers-color-scheme", "dark-mode", "theme-dark", "data-theme=\"dark\""])
-        if darkmode_found:
+        darkmode_keywords = ["prefers-color-scheme", "dark-mode", "theme-dark", "data-theme=\"dark\"", "class=\"dark\"", "class='dark'"]
+        if any(k in html for k in darkmode_keywords):
             add_positive(positives, "Dark mode ondersteuning gevonden.")
         else:
             add_issue(issues, "Geen dark mode ondersteuning – kan moderner.")
 
-        # SEO
+        # ✅ SEO
         if soup.find("title") and soup.find("title").text.strip():
             add_positive(positives, "Bevat <title> tag – essentieel voor SEO.")
         else:
@@ -403,7 +408,7 @@ def website_scan():
         else:
             add_issue(issues, "Geen gestructureerde data (Schema.org) gevonden.")
 
-        # Sitemap en robots.txt
+        # ✅ Sitemap + Robots
         try:
             sitemap = requests.get(url.rstrip("/") + "/sitemap.xml", timeout=5)
             if sitemap.ok and "<urlset" in sitemap.text.lower():
@@ -422,7 +427,7 @@ def website_scan():
         except:
             add_issue(issues, "Geen robots.txt bestand gevonden.")
 
-        # Performance & branding
+        # ✅ Branding & performance
         load_time = round(time.time() - start_time, 2)
         if load_time <= 3:
             add_positive(positives, f"Goede laadtijd ({load_time} sec).")
@@ -439,6 +444,22 @@ def website_scan():
         else:
             add_issue(issues, "Geen social media links gevonden.")
 
+        # ✅ Samenvatting
+        techniques = []
+        if "schema.org" in html:
+            techniques.append("gestructureerde data")
+        if any(tag in html for tag in tracking_keywords):
+            techniques.append("analytics/tracking")
+        if any(k in html for k in darkmode_keywords):
+            techniques.append("dark mode")
+        if any(tag in html for tag in chatbot_keywords):
+            techniques.append("live chat")
+        if soup.find(attrs={"aria-label": True}) or "aria-" in html:
+            techniques.append("toegankelijkheidslabels")
+
+        summary = f"Jouw website gebruikt technieken zoals: {', '.join(techniques)}." if techniques else "Geen moderne technieken aangetroffen."
+
+        # Final score
         positives = [p for p in positives if p and len(p.strip()) > 6]
         issues = [i for i in issues if i and len(i.strip()) > 6]
         score = max(30, 100 - len(issues) * 5)
@@ -448,7 +469,8 @@ def website_scan():
             "issues": issues,
             "positives": positives,
             "pages_checked": len(visited),
-            "content_score": word_count
+            "content_score": word_count,
+            "summary": summary
         })
 
     except Exception as e:
@@ -458,6 +480,7 @@ def website_scan():
             "positives": [],
             "pages_checked": 0
         })
+
 
 
 
