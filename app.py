@@ -254,12 +254,7 @@ def calculate_savings():
 
 @app.route("/website-scan", methods=["POST"])
 def website_scan():
-    import time
-    import re
-    import requests
-    from urllib.parse import urljoin
-    from bs4 import BeautifulSoup
-    from flask import request, jsonify
+
 
     def add_positive(lst, text):
         if text and len(text.strip()) > 6 and not re.fullmatch(r"(?i)\s*bevat[ .]*", text.strip()):
@@ -304,7 +299,14 @@ def website_scan():
         html = html_dump
         positives, issues = [], []
 
-        # CONTACT
+        # Content score
+        word_count = len(re.findall(r"\b\w+\b", soup.get_text()))
+        if word_count > 300:
+            add_positive(positives, f"Voldoende content aanwezig ({word_count} woorden).")
+        else:
+            add_issue(issues, f"Weinig content op de pagina ({word_count} woorden) – voeg meer inhoud toe.")
+
+        # Contact
         if soup.find("form"):
             add_positive(positives, "Formulier aanwezig – contactmogelijkheid gedetecteerd.")
         else:
@@ -325,7 +327,7 @@ def website_scan():
         else:
             add_issue(issues, "Geen telefoonnummer zichtbaar.")
 
-        # AUTOMATISERING
+        # Automatisering
         if "automatisering" in html:
             add_positive(positives, "Focus op automatisering gevonden.")
         else:
@@ -336,36 +338,37 @@ def website_scan():
         else:
             add_issue(issues, "Weinig interactieve scripts – zijn er dynamische elementen aanwezig?")
 
-        # JURIDISCH
+        # Juridisch
         if re.search(r"cookie|privacy|avg|gdpr", html):
             add_positive(positives, "Cookie- of privacybeleid aanwezig.")
         else:
             add_issue(issues, "Geen cookie- of privacybeleid gevonden – juridisch risico.")
 
-        # CHATBOT detection (breder)
+        if any(cls in html for cls in ["cookie-consent", "cookiebanner", "cookie-popup"]):
+            add_positive(positives, "Cookiebanner gedetecteerd – voldoet aan AVG.")
+        else:
+            add_issue(issues, "Geen cookiebanner gevonden – mogelijk niet AVG-compliant.")
+
+        # Chatbot detection
         chat_keywords = ["chatbot", "livechat", "crisp.chat", "tawk.to", "intercom", "tidio", "drift", "hubspotchat"]
         if any(tag in html for tag in chat_keywords) or soup.find(attrs={"data-chat": True}):
             add_positive(positives, "Live chat of chatbot gedetecteerd.")
         else:
             add_issue(issues, "Geen live chat gevonden – overweeg ondersteuning voor klantenservice.")
 
-        # TRACKING
-        tracking_keywords = ["gtag", "google-analytics", "hotjar", "clarity", "matomo", "tagmanager"]
-        if any(tag in html for tag in tracking_keywords):
-            add_positive(positives, "Analytics/tracking aanwezig.")
+        # Toegankelijkheid (WCAG)
+        if soup.find(attrs={"aria-label": True}) or "aria-" in html:
+            add_positive(positives, "Toegankelijkheidskenmerken (ARIA) aanwezig.")
         else:
-            add_issue(issues, "Geen analytics/tracking gevonden – weet je wat bezoekers doen?")
+            add_issue(issues, "Geen ARIA-labels gevonden – toegankelijkheid kan beter.")
 
-        # VIEWPORT
+        # Viewport & dark mode
         if soup.find("meta", attrs={"name": "viewport"}):
             add_positive(positives, "Viewport-tag aanwezig – goed voor mobiel.")
         else:
             add_issue(issues, "Geen viewport-tag – mobielvriendelijkheid kan beter.")
 
-        # DARKMODE detectie
-        darkmode_found = any(kw in html for kw in [
-            "prefers-color-scheme", "dark-mode", "theme-dark", "data-theme=\"dark\""
-        ])
+        darkmode_found = any(kw in html for kw in ["prefers-color-scheme", "dark-mode", "theme-dark", "data-theme=\"dark\""])
         if darkmode_found:
             add_positive(positives, "Dark mode ondersteuning gevonden.")
         else:
@@ -395,13 +398,12 @@ def website_scan():
         else:
             add_issue(issues, "Meerdere <h1> tags – verwarrend voor zoekmachines.")
 
-        # STRUCTURED DATA
         if "schema.org" in html:
             add_positive(positives, "Gestructureerde data (Schema.org) gevonden.")
         else:
             add_issue(issues, "Geen gestructureerde data (Schema.org) gevonden.")
 
-        # SITEMAP + ROBOTS.TXT
+        # Sitemap en robots.txt
         try:
             sitemap = requests.get(url.rstrip("/") + "/sitemap.xml", timeout=5)
             if sitemap.ok and "<urlset" in sitemap.text.lower():
@@ -420,14 +422,13 @@ def website_scan():
         except:
             add_issue(issues, "Geen robots.txt bestand gevonden.")
 
-        # PERFORMANCE
+        # Performance & branding
         load_time = round(time.time() - start_time, 2)
         if load_time <= 3:
             add_positive(positives, f"Goede laadtijd ({load_time} sec).")
         else:
             add_issue(issues, f"Laadtijd aan de hoge kant ({load_time} sec).")
 
-        # DESIGN/IDENTITEIT
         if soup.find("link", rel=lambda x: x and "icon" in x.lower()):
             add_positive(positives, "Favicon aanwezig – goed voor herkenning.")
         else:
@@ -438,17 +439,16 @@ def website_scan():
         else:
             add_issue(issues, "Geen social media links gevonden.")
 
-        # FILTERS
         positives = [p for p in positives if p and len(p.strip()) > 6]
         issues = [i for i in issues if i and len(i.strip()) > 6]
-
         score = max(30, 100 - len(issues) * 5)
 
         return jsonify({
             "score": score,
             "issues": issues,
             "positives": positives,
-            "pages_checked": len(visited)
+            "pages_checked": len(visited),
+            "content_score": word_count
         })
 
     except Exception as e:
